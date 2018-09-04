@@ -17,6 +17,7 @@
 
 #include "dsi_netctrl.h"
 
+#define SASTORAGE_DATA(addr)    (addr).__ss_padding
 
 enum app_tech_e {
   app_tech_min = 0,
@@ -247,6 +248,12 @@ static void app_create_data_call(enum app_tech_e tech, int ip_family, int profil
 
 int main(int argc, char * argv[])
 {
+  int rval;
+  char ip_str[20];
+  dsi_addr_info_t addr_info;
+
+  printf("Ver: 0.1\n");
+
   memset( &app_call_info, 0x0, sizeof(app_call_info) );
 
  (void)pthread_mutex_init( &app_call_info.mutex, NULL );
@@ -267,6 +274,17 @@ int main(int argc, char * argv[])
   dsi_start_data_call(app_call_info.handle);
   app_call_info.call_status = app_call_status_connecting;
  
+  sleep (3);
+
+  memset(&addr_info, 0x0, sizeof(dsi_addr_info_t));
+  rval = dsi_get_ip_addr(app_call_info.handle, &addr_info, 1);
+  printf("IP SUC: %d\n", rval);
+  printf("Interface IP address: %d.%d.%d.%d\n", SASTORAGE_DATA(addr_info.iface_addr_s.addr)[0], SASTORAGE_DATA(addr_info.iface_addr_s.addr)[1], SASTORAGE_DATA(addr_info.iface_addr_s.addr)[2], SASTORAGE_DATA(addr_info.iface_addr_s.addr)[3]);
+  printf("Gateway IP address: %d.%d.%d.%d\n", SASTORAGE_DATA(addr_info.gtwy_addr_s.addr)[0], SASTORAGE_DATA(addr_info.gtwy_addr_s.addr)[1], SASTORAGE_DATA(addr_info.gtwy_addr_s.addr)[2], SASTORAGE_DATA(addr_info.gtwy_addr_s.addr)[3]);
+  printf("Primary DNS address: %d.%d.%d.%d\n", SASTORAGE_DATA(addr_info.dnsp_addr_s.addr)[0], SASTORAGE_DATA(addr_info.dnsp_addr_s.addr)[1], SASTORAGE_DATA(addr_info.dnsp_addr_s.addr)[2], SASTORAGE_DATA(addr_info.dnsp_addr_s.addr)[3]);
+  printf("Secondary DNS address: %d.%d.%d.%d\n", SASTORAGE_DATA(addr_info.dnss_addr_s.addr)[0], SASTORAGE_DATA(addr_info.dnss_addr_s.addr)[1], SASTORAGE_DATA(addr_info.dnss_addr_s.addr)[2], SASTORAGE_DATA(addr_info.dnss_addr_s.addr)[3]);
+
+
 	do{
 		sleep (10000000);
 	}while(1);
