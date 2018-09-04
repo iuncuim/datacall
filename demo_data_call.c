@@ -91,7 +91,7 @@ struct event_strings_s event_string_tbl[DSI_EVT_MAX] =
 
 
 /* demo apn */
-static char apn[] = "wonet";
+static char apn[] = "internet";
 
 static app_call_info_t app_call_info;
 
@@ -180,7 +180,7 @@ static void app_create_data_call(enum app_tech_e tech, int ip_family, int profil
   case app_tech_lte:
 
     param_info.buf_val = apn;
-    param_info.num_val = 1;
+    param_info.num_val = strlen(apn);
     printf("Setting APN to %s\n", apn);
     dsi_set_data_call_param(app_call_info.handle, DSI_CALL_INFO_APN_NAME, &param_info);
     break;
@@ -252,7 +252,7 @@ int main(int argc, char * argv[])
   char ip_str[20];
   dsi_addr_info_t addr_info;
 
-  printf("Ver: 0.1\n");
+  printf("Ver: 0.2\n");
 
   memset( &app_call_info, 0x0, sizeof(app_call_info) );
 
@@ -267,7 +267,7 @@ int main(int argc, char * argv[])
    
   sleep(2);
   
-  app_create_data_call(app_tech_auto, DSI_IP_VERSION_4, 0);
+  app_create_data_call(app_tech_umts, DSI_IP_VERSION_4, 0);
   
   printf("Doing Net UP\n");
   
