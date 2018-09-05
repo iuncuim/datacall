@@ -75,9 +75,10 @@ struct event_strings_s
 };
 
 typedef struct{
-	char *pAPN;			//String APN
-	char *pUsername;	//APN user name
-	char *pPsw;			//APN password
+	char 			*pAPN;			//String APN
+	char 			*pUsername;		//APN user name
+	char 			*pPsw;			//APN password
+	dsi_auth_pref_t auth;			//Auth pref
 }t_arg;
 
 t_arg setting;
@@ -87,6 +88,7 @@ static const struct option longOpts[] = {
 		{"apn", required_argument, NULL,'a'},
 		{"user", required_argument, NULL,'u'},
 		{"psw", required_argument, NULL,'p'},
+		{"auth", required_argument, NULL,0},
 		{"help", no_argument, NULL,'h'},
 		{ NULL, no_argument, NULL, 0 }
 };
@@ -190,6 +192,7 @@ static void app_create_data_call(enum app_tech_e tech, int ip_family, int profil
   param_info.num_val = (int)tech_map[tech].dsi_tech_val;
   printf("Setting tech to %d\n", tech_map[tech].dsi_tech_val);
   dsi_set_data_call_param(app_call_info.handle, DSI_CALL_INFO_TECH_PREF, &param_info);
+
     
   /* set data call param - other */
   switch (app_call_info.tech)
@@ -207,17 +210,13 @@ static void app_create_data_call(enum app_tech_e tech, int ip_family, int profil
     	param_info.num_val = 0;
     }
     break;
-
-  case app_tech_cdma:
-    param_info.buf_val = NULL;
-    param_info.num_val = DSI_AUTH_PREF_PAP_CHAP_BOTH_ALLOWED;
-    printf("%s\n","Setting auth pref to both allowed");
-    dsi_set_data_call_param(app_call_info.handle, DSI_CALL_INFO_AUTH_PREF, &param_info);
-    break;
-
   default:
     break;
   }
+
+  param_info.buf_val = NULL;
+  param_info.num_val = setting.auth;
+  dsi_set_data_call_param(app_call_info.handle, DSI_CALL_INFO_AUTH_PREF, &param_info);
 
   switch (ip_family)
   {
@@ -290,6 +289,7 @@ void display_usage( void )
     		"  --apn <APN>, -a <APN>:             Set APN\n"
     		"  --user <username>, -u <username>:  Set APN user name (if any)\n"
     		"  --psw <password>, -u <password>:   Set APN password (if any)\n"
+    		"  --auth <type>:                     Set type authorization (no, pap, chap, both)\n"
     		);
     exit( EXIT_FAILURE );
 }
@@ -306,6 +306,7 @@ int main(int argc, char * argv[])
   setting.pAPN = NULL;
   setting.pUsername = NULL;
   setting.pPsw = NULL;
+  setting.auth = DSI_AUTH_PREF_PAP_CHAP_NOT_ALLOWED;
 
   opt = getopt_long( argc, argv, optString, longOpts, &longIndex );
   while( opt != -1 ) {
@@ -328,6 +329,32 @@ int main(int argc, char * argv[])
 	  case 'h':
 	  case '?':
 		  display_usage();
+		  break;
+	  case 0:
+		  if( strcmp( "auth", longOpts[longIndex].name ) == 0 ) {
+			  if(optarg == NULL){
+				  printf("Error options --auth\n");
+				  exit( EXIT_FAILURE );
+			  }
+			  if(strcmp( "no", optarg ) == 0){
+				  setting.auth = DSI_AUTH_PREF_PAP_CHAP_NOT_ALLOWED;
+				  printf("Set auth NONE\n");
+			  }else
+			  if(strcmp( "pap", optarg ) == 0){
+				  setting.auth = DSI_AUTH_PREF_PAP_ONLY_ALLOWED;
+				  printf("Set auth PAP\n");
+			  }else
+			  if(strcmp( "chap", optarg ) == 0){
+				  setting.auth = DSI_AUTH_PREF_CHAP_ONLY_ALLOWED;
+				  printf("Set auth CHAP\n");
+			  }else
+			  if(strcmp( "both", optarg ) == 0){
+				  setting.auth = DSI_AUTH_PREF_PAP_CHAP_BOTH_ALLOWED;
+				  printf("Set auth PAP and CHAP both\n");
+			  }else{
+				  printf("Error argument for options --auth\n");
+			  }
+		  }
 		  break;
 	  default:
 		  printf("Error options\n");
@@ -364,11 +391,37 @@ int main(int argc, char * argv[])
 
   memset(&addr_info, 0x0, sizeof(dsi_addr_info_t));
   rval = dsi_get_ip_addr(app_call_info.handle, &addr_info, 1);
-  printf("IP SUC: %d\n", rval);
-  printf("Interface IP address: %d.%d.%d.%d\n", SASTORAGE_DATA(addr_info.iface_addr_s.addr)[0], SASTORAGE_DATA(addr_info.iface_addr_s.addr)[1], SASTORAGE_DATA(addr_info.iface_addr_s.addr)[2], SASTORAGE_DATA(addr_info.iface_addr_s.addr)[3]);
-  printf("Gateway IP address: %d.%d.%d.%d\n", SASTORAGE_DATA(addr_info.gtwy_addr_s.addr)[0], SASTORAGE_DATA(addr_info.gtwy_addr_s.addr)[1], SASTORAGE_DATA(addr_info.gtwy_addr_s.addr)[2], SASTORAGE_DATA(addr_info.gtwy_addr_s.addr)[3]);
-  printf("Primary DNS address: %d.%d.%d.%d\n", SASTORAGE_DATA(addr_info.dnsp_addr_s.addr)[0], SASTORAGE_DATA(addr_info.dnsp_addr_s.addr)[1], SASTORAGE_DATA(addr_info.dnsp_addr_s.addr)[2], SASTORAGE_DATA(addr_info.dnsp_addr_s.addr)[3]);
-  printf("Secondary DNS address: %d.%d.%d.%d\n", SASTORAGE_DATA(addr_info.dnss_addr_s.addr)[0], SASTORAGE_DATA(addr_info.dnss_addr_s.addr)[1], SASTORAGE_DATA(addr_info.dnss_addr_s.addr)[2], SASTORAGE_DATA(addr_info.dnss_addr_s.addr)[3]);
+  printf("{\n");
+  printf("	\"pdp-type\": \"ipv4\",\n");
+  printf("	\"ip-family\": \"ipv4\",\n");
+  printf("	\"handle\": 0x%x,\n",app_call_info.handle);
+  printf("	\"status\": ");
+  switch(app_call_info.call_status){
+  case app_call_status_idle:
+	  printf("\"idle\",\n");
+	  break;
+  case app_call_status_connecting:
+	  printf("\"connecting\",\n");
+	  break;
+  case app_call_status_connected:
+	  printf("\"connected\",\n");
+	  break;
+  case app_call_status_disconnecting:
+	  printf("\"disconnecting\",\n");
+	  break;
+  default:
+	  printf("\"unknown\",\n");
+	  break;
+
+  }
+  printf("	\"ipv4\": {\n");
+  printf("		\"ip\": \"%d.%d.%d.%d\",\n", SASTORAGE_DATA(addr_info.iface_addr_s.addr)[0], SASTORAGE_DATA(addr_info.iface_addr_s.addr)[1], SASTORAGE_DATA(addr_info.iface_addr_s.addr)[2], SASTORAGE_DATA(addr_info.iface_addr_s.addr)[3]);
+  printf("		\"dns1\": \"%d.%d.%d.%d\",\n", SASTORAGE_DATA(addr_info.dnsp_addr_s.addr)[0], SASTORAGE_DATA(addr_info.dnsp_addr_s.addr)[1], SASTORAGE_DATA(addr_info.dnsp_addr_s.addr)[2], SASTORAGE_DATA(addr_info.dnsp_addr_s.addr)[3]);
+  printf("		\"dns2\": \"%d.%d.%d.%d\",\n", SASTORAGE_DATA(addr_info.dnss_addr_s.addr)[0], SASTORAGE_DATA(addr_info.dnss_addr_s.addr)[1], SASTORAGE_DATA(addr_info.dnss_addr_s.addr)[2], SASTORAGE_DATA(addr_info.dnss_addr_s.addr)[3]);
+  printf("		\"gateway\": \"%d.%d.%d.%d\",\n", SASTORAGE_DATA(addr_info.gtwy_addr_s.addr)[0], SASTORAGE_DATA(addr_info.gtwy_addr_s.addr)[1], SASTORAGE_DATA(addr_info.gtwy_addr_s.addr)[2], SASTORAGE_DATA(addr_info.gtwy_addr_s.addr)[3]);
+  printf("		\"subnet\": %d\n", addr_info.iface_mask);
+  printf("	},\n");
+  printf("}\n");
 
 
 	do{
