@@ -14,6 +14,7 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 #include <string.h>
+#include <getopt.h>
 
 #include "dsi_netctrl.h"
 
@@ -73,6 +74,23 @@ struct event_strings_s
   char * str;
 };
 
+typedef struct{
+	char *pAPN;			//String APN
+	char *pUsername;	//APN user name
+	char *pPsw;			//APN password
+}t_arg;
+
+t_arg setting;
+static const char *optString = "va:u:p:h?";
+static const struct option longOpts[] = {
+		{"version", no_argument, NULL,'v'},
+		{"apn", required_argument, NULL,'a'},
+		{"user", required_argument, NULL,'u'},
+		{"psw", required_argument, NULL,'p'},
+		{"help", no_argument, NULL,'h'},
+		{ NULL, no_argument, NULL, 0 }
+};
+
 struct event_strings_s event_string_tbl[DSI_EVT_MAX] =
 {
   { DSI_EVT_INVALID, "DSI_EVT_INVALID" },
@@ -91,7 +109,7 @@ struct event_strings_s event_string_tbl[DSI_EVT_MAX] =
 
 
 /* demo apn */
-static char apn[] = "wonet";
+//static char apn[] = "wonet";
 
 static app_call_info_t app_call_info;
 
@@ -179,10 +197,15 @@ static void app_create_data_call(enum app_tech_e tech, int ip_family, int profil
   case app_tech_umts:
   case app_tech_lte:
 
-    param_info.buf_val = apn;
-    param_info.num_val = 1;
-    printf("Setting APN to %s\n", apn);
-    dsi_set_data_call_param(app_call_info.handle, DSI_CALL_INFO_APN_NAME, &param_info);
+    if(setting.pAPN != NULL && strlen(setting.pAPN)){
+    	param_info.buf_val = setting.pAPN;
+    	param_info.num_val = strlen(setting.pAPN);
+    	printf("Setting APN to %s\n", setting.pAPN);
+    	dsi_set_data_call_param(app_call_info.handle, DSI_CALL_INFO_APN_NAME, &param_info);
+    }else{
+    	param_info.buf_val = NULL;
+    	param_info.num_val = 0;
+    }
     break;
 
   case app_tech_cdma:
@@ -221,11 +244,25 @@ static void app_create_data_call(enum app_tech_e tech, int ip_family, int profil
     printf("Setting family to %d\n", ip_family);
     dsi_set_data_call_param(app_call_info.handle, DSI_CALL_INFO_IP_VERSION, &param_info);
     break;
-
   default:
     /* don't set anything for IPv4 */
     break;
   }
+
+  if(setting.pUsername != NULL && strlen(setting.pUsername)){
+	  param_info.buf_val = setting.pUsername;
+	  param_info.num_val = strlen(setting.pUsername);
+	  printf("Setting User Name to %s\n", setting.pUsername);
+	  dsi_set_data_call_param(app_call_info.handle, DSI_CALL_INFO_USERNAME, &param_info);
+  }
+
+  if(setting.pPsw != NULL && strlen(setting.pPsw)){
+	  param_info.buf_val = setting.pPsw;
+	  param_info.num_val = strlen(setting.pPsw);
+	  printf("Setting Password  to %s\n", setting.pPsw);
+	  dsi_set_data_call_param(app_call_info.handle, DSI_CALL_INFO_PASSWORD, &param_info);
+  }
+
 
 #define DSI_PROFILE_3GPP2_OFFSET (1000)
 
@@ -246,13 +283,62 @@ static void app_create_data_call(enum app_tech_e tech, int ip_family, int profil
   }
 }
 
+void display_usage( void )
+{
+    printf("Options:\n"
+    		"  --version, -v:                     Programm version\n"
+    		"  --apn <APN>, -a <APN>:             Set APN\n"
+    		"  --user <username>, -u <username>:  Set APN user name (if any)\n"
+    		"  --psw <password>, -u <password>:   Set APN password (if any)\n"
+    		);
+    exit( EXIT_FAILURE );
+}
+
 int main(int argc, char * argv[])
 {
   int rval;
   char ip_str[20];
   dsi_addr_info_t addr_info;
+  int opt = 0;
+  int longIndex;
 
-  printf("Ver: 0.1\n");
+
+  setting.pAPN = NULL;
+  setting.pUsername = NULL;
+  setting.pPsw = NULL;
+
+  opt = getopt_long( argc, argv, optString, longOpts, &longIndex );
+  while( opt != -1 ) {
+	  switch( opt ) {
+	  case 'v':
+		  printf("Ver: 0.1\n");
+		  break;
+	  case 'a':
+		  printf("Set APN=%s\n",optarg);
+		  setting.pAPN = optarg;
+		  break;
+	  case 'u':
+		  printf("Set User Name=%s\n",optarg);
+		  setting.pUsername = optarg;
+		  break;
+	  case 'p':
+		  printf("Set Password APN=%s\n",optarg);
+		  setting.pPsw = optarg;
+		  break;
+	  case 'h':
+	  case '?':
+		  display_usage();
+		  break;
+	  default:
+		  printf("Error options\n");
+		  break;
+
+	  }
+	  opt = getopt_long( argc, argv, optString, longOpts, &longIndex );
+  }
+
+
+
 
   memset( &app_call_info, 0x0, sizeof(app_call_info) );
 
@@ -267,7 +353,7 @@ int main(int argc, char * argv[])
    
   sleep(2);
   
-  app_create_data_call(app_tech_auto, DSI_IP_VERSION_4, 0);
+  app_create_data_call(app_tech_umts, DSI_IP_VERSION_4, 0);
   
   printf("Doing Net UP\n");
   
