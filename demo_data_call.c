@@ -18,7 +18,12 @@
 
 #include "dsi_netctrl.h"
 
+
+
+//#define LOG_ENABLE
+
 #define SASTORAGE_DATA(addr)    (addr).__ss_padding
+
 
 enum app_tech_e {
   app_tech_min = 0,
@@ -124,7 +129,9 @@ static void app_net_ev_cb( dsi_hndl_t hndl,
 
   char suffix[256];
 
+#ifdef LOG_ENABLE
   printf("hdl 0x%x evt %d cb\n", hndl, evt);
+#endif
   if (evt > DSI_EVT_INVALID && evt < DSI_EVT_MAX)
   {
     app_call_info_t* call = (app_call_info_t*) user_data;
@@ -156,7 +163,9 @@ static void app_net_ev_cb( dsi_hndl_t hndl,
         break;
 
       default:
+#ifdef LOG_ENABLE
         printf("Received unsupported event [%d]\n", evt);
+#endif
         return;
     }
 
@@ -165,8 +174,10 @@ static void app_net_ev_cb( dsi_hndl_t hndl,
     {
       if (event_string_tbl[i].evt == evt)
       {
+#ifdef LOG_ENABLE
         printf("<<< callback received event [%s]%s\n",
                       event_string_tbl[i].str, suffix);
+#endif
         break;
       }
     }
@@ -180,8 +191,9 @@ static void app_create_data_call(enum app_tech_e tech, int ip_family, int profil
   /* obtain data service handle */
   app_call_info.handle = dsi_get_data_srvc_hndl(app_net_ev_cb, (void*) &app_call_info);
 
-
+#ifdef LOG_ENABLE
   printf("app_call_info.handle 0x%x\n",app_call_info.handle );
+#endif
   app_call_info.tech = tech;
   app_call_info.profile = profile;
   app_call_info.call_status = app_call_status_idle;
@@ -190,7 +202,9 @@ static void app_create_data_call(enum app_tech_e tech, int ip_family, int profil
    /* set data call param - tech pref */
   param_info.buf_val = NULL;
   param_info.num_val = (int)tech_map[tech].dsi_tech_val;
+#ifdef LOG_ENABLE
   printf("Setting tech to %d\n", tech_map[tech].dsi_tech_val);
+#endif
   dsi_set_data_call_param(app_call_info.handle, DSI_CALL_INFO_TECH_PREF, &param_info);
 
     
@@ -203,7 +217,9 @@ static void app_create_data_call(enum app_tech_e tech, int ip_family, int profil
     if(setting.pAPN != NULL && strlen(setting.pAPN)){
     	param_info.buf_val = setting.pAPN;
     	param_info.num_val = strlen(setting.pAPN);
+#ifdef LOG_ENABLE
     	printf("Setting APN to %s\n", setting.pAPN);
+#endif
     	dsi_set_data_call_param(app_call_info.handle, DSI_CALL_INFO_APN_NAME, &param_info);
     }else{
     	param_info.buf_val = NULL;
@@ -224,7 +240,9 @@ static void app_create_data_call(enum app_tech_e tech, int ip_family, int profil
     app_call_info.family = ip_family;
     param_info.buf_val = NULL;
     param_info.num_val = ip_family;
+#ifdef LOG_ENABLE
     printf("Setting family to %d\n", ip_family);
+#endif
     dsi_set_data_call_param(app_call_info.handle, DSI_CALL_INFO_IP_VERSION, &param_info);
     break;
 
@@ -232,7 +250,9 @@ static void app_create_data_call(enum app_tech_e tech, int ip_family, int profil
     app_call_info.family = ip_family;
     param_info.buf_val = NULL;
     param_info.num_val = ip_family;
+#ifdef LOG_ENABLE
     printf("Setting family to %d\n", ip_family);
+#endif
     dsi_set_data_call_param(app_call_info.handle, DSI_CALL_INFO_IP_VERSION, &param_info);
     break;
 
@@ -240,7 +260,9 @@ static void app_create_data_call(enum app_tech_e tech, int ip_family, int profil
     app_call_info.family = ip_family;
     param_info.buf_val = NULL;
     param_info.num_val = ip_family;
+#ifdef LOG_ENABLE
     printf("Setting family to %d\n", ip_family);
+#endif
     dsi_set_data_call_param(app_call_info.handle, DSI_CALL_INFO_IP_VERSION, &param_info);
     break;
   default:
@@ -251,14 +273,18 @@ static void app_create_data_call(enum app_tech_e tech, int ip_family, int profil
   if(setting.pUsername != NULL && strlen(setting.pUsername)){
 	  param_info.buf_val = setting.pUsername;
 	  param_info.num_val = strlen(setting.pUsername);
+#ifdef LOG_ENABLE
 	  printf("Setting User Name to %s\n", setting.pUsername);
+#endif
 	  dsi_set_data_call_param(app_call_info.handle, DSI_CALL_INFO_USERNAME, &param_info);
   }
 
   if(setting.pPsw != NULL && strlen(setting.pPsw)){
 	  param_info.buf_val = setting.pPsw;
 	  param_info.num_val = strlen(setting.pPsw);
+#ifdef LOG_ENABLE
 	  printf("Setting Password  to %s\n", setting.pPsw);
+#endif
 	  dsi_set_data_call_param(app_call_info.handle, DSI_CALL_INFO_PASSWORD, &param_info);
   }
 
@@ -270,13 +296,17 @@ static void app_create_data_call(enum app_tech_e tech, int ip_family, int profil
     if( profile > DSI_PROFILE_3GPP2_OFFSET )
     {
       param_info.num_val = (profile - DSI_PROFILE_3GPP2_OFFSET);
+#ifdef LOG_ENABLE
       printf("Setting 3GPP2 PROFILE to %d\n", param_info.num_val);
+#endif
       dsi_set_data_call_param(app_call_info.handle, DSI_CALL_INFO_CDMA_PROFILE_IDX, &param_info);
     }
     else
     {
       param_info.num_val = profile;
+#ifdef LOG_ENABLE
       printf("Setting 3GPP PROFILE to %d\n", param_info.num_val);
+#endif
       dsi_set_data_call_param(app_call_info.handle, DSI_CALL_INFO_UMTS_PROFILE_IDX, &param_info);
     }
   }
@@ -315,15 +345,21 @@ int main(int argc, char * argv[])
 		  printf("Ver: 0.1\n");
 		  break;
 	  case 'a':
+#ifdef LOG_ENABLE
 		  printf("Set APN=%s\n",optarg);
+#endif
 		  setting.pAPN = optarg;
 		  break;
 	  case 'u':
+#ifdef LOG_ENABLE
 		  printf("Set User Name=%s\n",optarg);
+#endif
 		  setting.pUsername = optarg;
 		  break;
 	  case 'p':
+#ifdef LOG_ENABLE
 		  printf("Set Password APN=%s\n",optarg);
+#endif
 		  setting.pPsw = optarg;
 		  break;
 	  case 'h':
@@ -338,19 +374,27 @@ int main(int argc, char * argv[])
 			  }
 			  if(strcmp( "no", optarg ) == 0){
 				  setting.auth = DSI_AUTH_PREF_PAP_CHAP_NOT_ALLOWED;
+#ifdef LOG_ENABLE
 				  printf("Set auth NONE\n");
+#endif
 			  }else
 			  if(strcmp( "pap", optarg ) == 0){
 				  setting.auth = DSI_AUTH_PREF_PAP_ONLY_ALLOWED;
+#ifdef LOG_ENABLE
 				  printf("Set auth PAP\n");
+#endif
 			  }else
 			  if(strcmp( "chap", optarg ) == 0){
 				  setting.auth = DSI_AUTH_PREF_CHAP_ONLY_ALLOWED;
+#ifdef LOG_ENABLE
 				  printf("Set auth CHAP\n");
+#endif
 			  }else
 			  if(strcmp( "both", optarg ) == 0){
 				  setting.auth = DSI_AUTH_PREF_PAP_CHAP_BOTH_ALLOWED;
+#ifdef LOG_ENABLE
 				  printf("Set auth PAP and CHAP both\n");
+#endif
 			  }else{
 				  printf("Error argument for options --auth\n");
 			  }
@@ -381,8 +425,9 @@ int main(int argc, char * argv[])
   sleep(2);
   
   app_create_data_call(app_tech_umts, DSI_IP_VERSION_4, 0);
-  
+#ifdef LOG_ENABLE
   printf("Doing Net UP\n");
+#endif
   
   dsi_start_data_call(app_call_info.handle);
   app_call_info.call_status = app_call_status_connecting;
@@ -424,6 +469,8 @@ int main(int argc, char * argv[])
   printf("}\n");
 
 
+  if (daemon(0,0) != 0)
+			err(EXIT_FAILURE, "Cannot daemonize");
 	do{
 		sleep (10000000);
 	}while(1);
