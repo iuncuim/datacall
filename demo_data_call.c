@@ -469,6 +469,7 @@ int main(int argc, char * argv[])
   printf("}\n");
 
 
+  close(STDOUT_FILENO);
   if (daemon(0,0) != 0)
 			err(EXIT_FAILURE, "Cannot daemonize");
 	do{
