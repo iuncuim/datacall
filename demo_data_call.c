@@ -464,8 +464,8 @@ int main(int argc, char * argv[])
   printf("		\"dns1\": \"%d.%d.%d.%d\",\n", SASTORAGE_DATA(addr_info.dnsp_addr_s.addr)[0], SASTORAGE_DATA(addr_info.dnsp_addr_s.addr)[1], SASTORAGE_DATA(addr_info.dnsp_addr_s.addr)[2], SASTORAGE_DATA(addr_info.dnsp_addr_s.addr)[3]);
   printf("		\"dns2\": \"%d.%d.%d.%d\",\n", SASTORAGE_DATA(addr_info.dnss_addr_s.addr)[0], SASTORAGE_DATA(addr_info.dnss_addr_s.addr)[1], SASTORAGE_DATA(addr_info.dnss_addr_s.addr)[2], SASTORAGE_DATA(addr_info.dnss_addr_s.addr)[3]);
   printf("		\"gateway\": \"%d.%d.%d.%d\",\n", SASTORAGE_DATA(addr_info.gtwy_addr_s.addr)[0], SASTORAGE_DATA(addr_info.gtwy_addr_s.addr)[1], SASTORAGE_DATA(addr_info.gtwy_addr_s.addr)[2], SASTORAGE_DATA(addr_info.gtwy_addr_s.addr)[3]);
-  printf("		\"subnet\": %d\n", addr_info.iface_mask);
-  printf("	},\n");
+  printf("		\"subnet\": \"%d\"\n", addr_info.iface_mask);
+  printf("	}\n");
   printf("}\n");
 
 
