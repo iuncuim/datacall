@@ -439,7 +439,7 @@ int main(int argc, char * argv[])
   printf("{\n");
   printf("	\"pdp-type\": \"ipv4\",\n");
   printf("	\"ip-family\": \"ipv4\",\n");
-  printf("	\"handle\": 0x%x,\n",app_call_info.handle);
+  printf("	\"handle\": \"0x%x\",\n",app_call_info.handle);
   printf("	\"status\": ");
   switch(app_call_info.call_status){
   case app_call_status_idle:
