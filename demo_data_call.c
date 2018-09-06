@@ -442,7 +442,7 @@ int main(int argc, char * argv[])
   case -1:
 	  perror("fork");
 	  exit(1);
-  case 0:
+  default:
 	  printf("{\n");
 	  printf("	\"pdp-type\": \"ipv4\",\n");
 	  printf("	\"ip-family\": \"ipv4\",\n");
@@ -475,7 +475,7 @@ int main(int argc, char * argv[])
 	  printf("	}\n");
 	  printf("}\n");
 	  exit(1);
-	  default:
+	  case 0:
 		  if (daemon(0,0) != 0)
 			  err(EXIT_FAILURE, "Cannot daemonize");
 		  do{
