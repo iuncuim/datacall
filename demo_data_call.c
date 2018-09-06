@@ -331,6 +331,7 @@ int main(int argc, char * argv[])
   dsi_addr_info_t addr_info;
   int opt = 0;
   int longIndex;
+  pid_t pid;
 
 
   setting.pAPN = NULL;
@@ -436,44 +437,51 @@ int main(int argc, char * argv[])
 
   memset(&addr_info, 0x0, sizeof(dsi_addr_info_t));
   rval = dsi_get_ip_addr(app_call_info.handle, &addr_info, 1);
-  printf("{\n");
-  printf("	\"pdp-type\": \"ipv4\",\n");
-  printf("	\"ip-family\": \"ipv4\",\n");
-  printf("	\"handle\": \"0x%x\",\n",app_call_info.handle);
-  printf("	\"status\": ");
-  switch(app_call_info.call_status){
-  case app_call_status_idle:
-	  printf("\"idle\",\n");
-	  break;
-  case app_call_status_connecting:
-	  printf("\"connecting\",\n");
-	  break;
-  case app_call_status_connected:
-	  printf("\"connected\",\n");
-	  break;
-  case app_call_status_disconnecting:
-	  printf("\"disconnecting\",\n");
-	  break;
-  default:
-	  printf("\"unknown\",\n");
-	  break;
 
+  switch(pid=fork()) {
+  case -1:
+	  perror("fork");
+	  exit(1);
+  case 0:
+	  printf("{\n");
+	  printf("	\"pdp-type\": \"ipv4\",\n");
+	  printf("	\"ip-family\": \"ipv4\",\n");
+	  printf("	\"handle\": \"0x%x\",\n",app_call_info.handle);
+	  printf("	\"status\": ");
+	  switch(app_call_info.call_status){
+	  case app_call_status_idle:
+		  printf("\"idle\",\n");
+		  break;
+	  case app_call_status_connecting:
+		  printf("\"connecting\",\n");
+		  break;
+	  case app_call_status_connected:
+		  printf("\"connected\",\n");
+		  break;
+	  case app_call_status_disconnecting:
+		  printf("\"disconnecting\",\n");
+		  break;
+	  default:
+		  printf("\"unknown\",\n");
+		  break;
+
+	  }
+	  printf("	\"ipv4\": {\n");
+	  printf("		\"ip\": \"%d.%d.%d.%d\",\n", SASTORAGE_DATA(addr_info.iface_addr_s.addr)[0], SASTORAGE_DATA(addr_info.iface_addr_s.addr)[1], SASTORAGE_DATA(addr_info.iface_addr_s.addr)[2], SASTORAGE_DATA(addr_info.iface_addr_s.addr)[3]);
+	  printf("		\"dns1\": \"%d.%d.%d.%d\",\n", SASTORAGE_DATA(addr_info.dnsp_addr_s.addr)[0], SASTORAGE_DATA(addr_info.dnsp_addr_s.addr)[1], SASTORAGE_DATA(addr_info.dnsp_addr_s.addr)[2], SASTORAGE_DATA(addr_info.dnsp_addr_s.addr)[3]);
+	  printf("		\"dns2\": \"%d.%d.%d.%d\",\n", SASTORAGE_DATA(addr_info.dnss_addr_s.addr)[0], SASTORAGE_DATA(addr_info.dnss_addr_s.addr)[1], SASTORAGE_DATA(addr_info.dnss_addr_s.addr)[2], SASTORAGE_DATA(addr_info.dnss_addr_s.addr)[3]);
+	  printf("		\"gateway\": \"%d.%d.%d.%d\",\n", SASTORAGE_DATA(addr_info.gtwy_addr_s.addr)[0], SASTORAGE_DATA(addr_info.gtwy_addr_s.addr)[1], SASTORAGE_DATA(addr_info.gtwy_addr_s.addr)[2], SASTORAGE_DATA(addr_info.gtwy_addr_s.addr)[3]);
+	  printf("		\"subnet\": \"%d\"\n", addr_info.iface_mask);
+	  printf("	}\n");
+	  printf("}\n");
+	  exit(1);
+	  default:
+		  if (daemon(0,0) != 0)
+			  err(EXIT_FAILURE, "Cannot daemonize");
+		  do{
+			  sleep (10000000);
+		  }while(1);
+		  break;
   }
-  printf("	\"ipv4\": {\n");
-  printf("		\"ip\": \"%d.%d.%d.%d\",\n", SASTORAGE_DATA(addr_info.iface_addr_s.addr)[0], SASTORAGE_DATA(addr_info.iface_addr_s.addr)[1], SASTORAGE_DATA(addr_info.iface_addr_s.addr)[2], SASTORAGE_DATA(addr_info.iface_addr_s.addr)[3]);
-  printf("		\"dns1\": \"%d.%d.%d.%d\",\n", SASTORAGE_DATA(addr_info.dnsp_addr_s.addr)[0], SASTORAGE_DATA(addr_info.dnsp_addr_s.addr)[1], SASTORAGE_DATA(addr_info.dnsp_addr_s.addr)[2], SASTORAGE_DATA(addr_info.dnsp_addr_s.addr)[3]);
-  printf("		\"dns2\": \"%d.%d.%d.%d\",\n", SASTORAGE_DATA(addr_info.dnss_addr_s.addr)[0], SASTORAGE_DATA(addr_info.dnss_addr_s.addr)[1], SASTORAGE_DATA(addr_info.dnss_addr_s.addr)[2], SASTORAGE_DATA(addr_info.dnss_addr_s.addr)[3]);
-  printf("		\"gateway\": \"%d.%d.%d.%d\",\n", SASTORAGE_DATA(addr_info.gtwy_addr_s.addr)[0], SASTORAGE_DATA(addr_info.gtwy_addr_s.addr)[1], SASTORAGE_DATA(addr_info.gtwy_addr_s.addr)[2], SASTORAGE_DATA(addr_info.gtwy_addr_s.addr)[3]);
-  printf("		\"subnet\": \"%d\"\n", addr_info.iface_mask);
-  printf("	}\n");
-  printf("}\n");
-
-
-  close(STDOUT_FILENO);
-  if (daemon(0,0) != 0)
-			err(EXIT_FAILURE, "Cannot daemonize");
-	do{
-		sleep (10000000);
-	}while(1);
 
 }
