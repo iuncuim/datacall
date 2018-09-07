@@ -318,7 +318,7 @@ void display_usage( void )
     		"  --version, -v:                     Programm version\n"
     		"  --apn <APN>, -a <APN>:             Set APN\n"
     		"  --user <username>, -u <username>:  Set APN user name (if any)\n"
-    		"  --psw <password>, -u <password>:   Set APN password (if any)\n"
+    		"  --psw <password>, -p <password>:   Set APN password (if any)\n"
     		"  --auth <type>:                     Set type authorization (no, pap, chap, both)\n"
     		);
     exit( EXIT_FAILURE );
@@ -344,6 +344,7 @@ int main(int argc, char * argv[])
 	  switch( opt ) {
 	  case 'v':
 		  printf("Ver: 0.1\n");
+		  exit( EXIT_FAILURE );
 		  break;
 	  case 'a':
 #ifdef LOG_ENABLE

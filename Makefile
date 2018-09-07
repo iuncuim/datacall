@@ -32,6 +32,7 @@ ALL_PATHS = $(SRC_DIR)
 ALL_PATHS += ./include/qmi-framework
 ALL_PATHS += ./include/qmi
 ALL_PATHS += ./include/data
+ALL_PATHS += ./include/qmi_demo
 
 ALL_INCLUDES = $(addprefix $(INCLUDE_PREFIX), $(ALL_PATHS))
 

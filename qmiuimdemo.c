@@ -216,7 +216,7 @@ char * qmiuimdemo_parse_iccid
   int dst = 0;
   char * parsed_iccid = NULL;
 
-  if ((raw_iccid_ptr == NULL) || (raw_iccid_len == NULL))
+  if ((raw_iccid_ptr == NULL) || !raw_iccid_len)
   {
     return NULL;
   }
@@ -415,7 +415,7 @@ int get_IMSI(int argc , char ** argv)
   return 1;
 }
 
-int get_ICCID(int argc , char ** argv)
+int get_ICCID()
 {
   char * iccid = NULL;
   int i;
@@ -443,3 +443,158 @@ int get_ICCID(int argc , char ** argv)
 
   return 1;
 }
+
+int getPinState(){
+	uim_get_card_status_resp_msg_v01	qmi_response;
+	qmi_client_error_type				qmi_err_code = 0;
+	unsigned int						i;
+	unsigned int						j;
+	unsigned int						card_found = 0;
+
+	qmiuimdemo_qmi_init();
+	memset(&qmi_response, 0,	sizeof(uim_get_card_status_resp_msg_v01));
+	qmi_err_code = qmi_client_send_msg_sync(qmiuimdemo_uim_svc_client,
+						QMI_UIM_GET_CARD_STATUS_REQ_V01,
+						NULL,
+						0,
+						&qmi_response,
+						sizeof(qmi_response),
+						10000);
+
+	if (qmi_err_code != QMI_NO_ERR){
+		LOG("qmi read card status err=%d\n",qmi_err_code);
+	}
+	if(!qmi_response.card_status_valid || qmi_response.resp.result != QMI_RESULT_SUCCESS_V01){
+		LOG("card_status is not valid !\n");
+	}
+	for(i=0; i < QMI_UIM_CARDS_MAX_V01 && i < qmi_response.card_status.card_info_len; i++){
+
+		/**<   Indicates the state of the card. Valid values:\n
+			- 0 -- Absent\n
+			- 1 -- Present\n
+			- 2 -- Error
+	    */
+		LOG("card_info[i].card_state: 0x%x\n",qmi_response.card_status.card_info[i].card_state);
+
+
+		 /**<   Indicates the reason for the card error, and is valid only when the card
+		 state is Error. Valid values:\n
+			  - UIM_CARD_ERROR_CODE_UNKNOWN (0x00) --  Unknown\n
+			  - UIM_CARD_ERROR_CODE_POWER_DOWN (0x01) --  Power down\n
+			  - UIM_CARD_ERROR_CODE_POLL_ERROR (0x02) --  Poll error\n
+			  - UIM_CARD_ERROR_CODE_NO_ATR_RECEIVED (0x03) --  No ATR received\n
+			  - UIM_CARD_ERROR_CODE_VOLT_MISMATCH (0x04) --  Volt mismatch\n
+			  - UIM_CARD_ERROR_CODE_PARITY_ERROR (0x05) --  Parity error\n
+			  - UIM_CARD_ERROR_CODE_POSSIBLY_REMOVED (0x06) --  Unknown, possibly removed\n
+			  - UIM_CARD_ERROR_CODE_SIM_TECHNICAL_PROBLEMS (0x07) --  Card returned technical problems\n
+			  - UIM_CARD_ERROR_CODE_NULL_BYTES (0x08) --  Card returned NULL bytes\n
+			  - UIM_CARD_ERROR_CODE_SAP_CONNECTED (0x09) --  Terminal in SAP mode
+		 \n
+		 Other values are possible and reserved for future use. When an
+		 unknown value is received, it is to be handled as ``Unknown''.
+		 */
+		LOG("card_info[i].error_code: 0x%x\n",qmi_response.card_status.card_info[i].error_code);
+
+		if (qmi_response.card_status.card_info[i].card_state ==	UIM_CARD_STATE_PRESENT_V01) {
+			for (j = 0 ; j < QMI_UIM_APPS_MAX_V01 ; j++) {
+				/**<   Indicates the type of the application. Valid values:\n
+        				- 0 -- Unknown\n
+        				- 1 -- SIM card\n
+        				- 2 -- USIM application\n
+        				- 3 -- RUIM card\n
+        				- 4 -- CSIM application\n
+        				- 5 -- ISIM application\n
+       	   	   	   	   	   Other values are reserved for the future and are to be handled as
+       	   	   	   	   ``Unknown''.
+				 */
+				LOG("Type application=%d\n",qmi_response.card_status.card_info[i].app_info[j].app_type);
+
+				/**<   Indicates the state of the application. Valid values:\n
+        			- 0 -- Unknown\n
+        			- 1 -- Detected\n
+        			- 2 -- PIN1 or UPIN is required\n
+        			- 3 -- PUK1 or PUK for UPIN is required\n
+        			- 4 -- Personalization state must be checked\n
+        			- 5 -- PIN1 is blocked\n
+        			- 6 -- Illegal\n
+        			- 7 -- Ready
+				*/
+				LOG("State of application=%d\n",qmi_response.card_status.card_info[i].app_info[j].app_state);
+
+				if (((qmi_response.card_status.card_info[i].app_info[j].app_type == 1) ||
+				(qmi_response.card_status.card_info[i].app_info[j].app_type == 2)) &&
+				(qmi_response.card_status.card_info[i].app_info[j].app_state ==	UIM_APP_STATE_READY_V01)) {
+					LOG("card READY\n");
+					LOG("card_info[i].app_type : 0x%x\n", qmi_response.card_status.card_info[i].app_info[j].app_type);
+					LOG("card_info[i].app_state : 0x%x\n",qmi_response.card_status.card_info[i].app_info[j].app_state);
+					card_found = 1;
+					break;
+				}
+			}
+		}
+		if (card_found) {
+			LOG("card found\n");
+			break;
+		}
+	}
+	qmiuimdemo_qmi_release();
+
+	return card_found;
+}
+
+int VerifyPIN(char *pin){
+	uim_verify_pin_req_msg_v01 	request;
+	uim_verify_pin_resp_msg_v01	qmi_response;
+	qmi_client_error_type		qmi_err_code = 0;
+
+
+	if (pin == NULL || strlen(pin) > QMI_UIM_PIN_MAX_V01) {
+		printf("Error: Invalid pin\n");
+		return -1;
+	}
+	qmiuimdemo_qmi_init();
+	request.session_information.session_type = UIM_SESSION_TYPE_PRIMARY_GW_V01;
+	request.session_information.aid_len = 0;
+	request.verify_pin.pin_id = 1;
+	/**<   Indicates the PIN ID to be verified. Valid values:\n
+        - 1 - PIN1 (also called PIN)\n
+        - 2 - PIN2\n
+        - 3 - Universal PIN\n
+        - 4 - Hidden key
+  */
+	memcpy( request.verify_pin.pin_value, pin, strlen(pin));
+	request.verify_pin.pin_value_len = strlen(pin);
+	memset(&qmi_response, 0,	sizeof(uim_verify_pin_resp_msg_v01));
+	qmi_err_code = qmi_client_send_msg_sync(qmiuimdemo_uim_svc_client,
+                            QMI_UIM_VERIFY_PIN_REQ_V01,
+                            &request,
+                            sizeof(request),
+                            &qmi_response,
+                            sizeof(qmi_response),
+                            10000);
+	if (qmi_err_code != QMI_NO_ERR){
+		LOG("qmi verify PIN err=%d\n",qmi_err_code);
+		qmiuimdemo_qmi_release();
+		return 0;
+	}
+	if(qmi_response.resp.result != QMI_NO_ERR ){
+		LOG("qmi request verify PIN err=%d\n",qmi_response.resp.error);
+		qmiuimdemo_qmi_release();
+		return 0;
+	}
+
+	qmiuimdemo_qmi_release();
+	return 1;
+}
+
+
+
+
+
+
+
+
+
+
+
+
