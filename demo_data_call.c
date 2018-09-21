@@ -319,7 +319,7 @@ void display_usage( void )
     		"  --apn <APN>, -a <APN>:             Set APN\n"
     		"  --user <username>, -u <username>:  Set APN user name (if any)\n"
     		"  --psw <password>, -p <password>:   Set APN password (if any)\n"
-    		"  --auth <type>:                     Set type authorization (no, pap, chap, both)\n"
+    		"  --auth <type>:                     Set type authorization (none, pap, chap, both)\n"
     		);
     exit( EXIT_FAILURE );
 }
@@ -374,7 +374,7 @@ int main(int argc, char * argv[])
 				  printf("Error options --auth\n");
 				  exit( EXIT_FAILURE );
 			  }
-			  if(strcmp( "no", optarg ) == 0){
+			  if(strcmp( "none", optarg ) == 0){
 				  setting.auth = DSI_AUTH_PREF_PAP_CHAP_NOT_ALLOWED;
 #ifdef LOG_ENABLE
 				  printf("Set auth NONE\n");
