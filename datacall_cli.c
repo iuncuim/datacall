@@ -37,12 +37,30 @@ void display_usage( void )
     		);
     exit( EXIT_FAILURE );
 }
-
+/*
+ * {
+        "pin1_status": "disabled",
+        "pin1_verify_tries": 3,
+        "pin1_unblock_tries": 10,
+        "pin2_status": "not_verified",
+        "pin2_verify_tries": 3,
+        "pin2_unblock_tries": 10
+}
+{
+        "pin1_status": "verified",
+        "pin1_verify_tries": 3,
+        "pin1_unblock_tries": 10,
+        "pin2_status": "not_verified",
+        "pin2_verify_tries": 3,
+        "pin2_unblock_tries": 10
+}
+ */
 
 int main( int argc, char *argv[] )
 {
   int opt = 0;
   int longIndex;
+  int temp;
 
 
  opt = getopt_long( argc, argv, optString, longOpts, &longIndex );
@@ -52,7 +70,24 @@ int main( int argc, char *argv[] )
 		 printf(VERSION);
 		 break;
 	 case 'p':
-		 getPinState();
+		 temp = getPinState();
+		 if(!temp){
+			 printf("UIM uninitialized\n");
+		 }else{
+			 printf("{\n");
+			 printf(" \"pin1_status\": ");
+			 if(temp == 1){
+				 printf("verified,\n");
+			 }else{
+				printf("not_verifed,\n");
+			 }
+			 printf(" \"pin1_verify_tries\": \"error\",\n");
+			 printf(" \"pin1_unblock_tries\": \"error\",\n");
+			 printf(" \"pin2_status\": \"error\",\n");
+			 printf(" \"pin1_verify_tries\": \"error\",\n");
+			 printf(" \"pin2_unblock_tries\": \"error\",\n");
+			 printf("}\n");
+		 }
 		 break;
 	 case 's':
 		 break;

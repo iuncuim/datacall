@@ -7,6 +7,7 @@
 #include "user_identity_module_v01.h"
 
 #define LOG printf
+//#define DEBUG
 
 int get_IMSI();
 int get_ICCID();
@@ -462,10 +463,18 @@ int getPinState(){
 						10000);
 
 	if (qmi_err_code != QMI_NO_ERR){
+#ifdef DEBUG
 		LOG("qmi read card status err=%d\n",qmi_err_code);
+#endif //DEBUG
+		printf("UIM uninitialized");
+		return card_found;
 	}
 	if(!qmi_response.card_status_valid || qmi_response.resp.result != QMI_RESULT_SUCCESS_V01){
+#ifdef DEBUG
 		LOG("card_status is not valid !\n");
+#endif //DEBUG
+		printf("UIM uninitialized");
+		return card_found;
 	}
 	for(i=0; i < QMI_UIM_CARDS_MAX_V01 && i < qmi_response.card_status.card_info_len; i++){
 
@@ -474,7 +483,9 @@ int getPinState(){
 			- 1 -- Present\n
 			- 2 -- Error
 	    */
+#ifdef DEBUG
 		LOG("card_info[i].card_state: 0x%x\n",qmi_response.card_status.card_info[i].card_state);
+#endif //DEBUG
 
 
 		 /**<   Indicates the reason for the card error, and is valid only when the card
@@ -493,7 +504,9 @@ int getPinState(){
 		 Other values are possible and reserved for future use. When an
 		 unknown value is received, it is to be handled as ``Unknown''.
 		 */
+#ifdef DEBUG
 		LOG("card_info[i].error_code: 0x%x\n",qmi_response.card_status.card_info[i].error_code);
+#endif //DEBUG
 
 		if (qmi_response.card_status.card_info[i].card_state ==	UIM_CARD_STATE_PRESENT_V01) {
 			for (j = 0 ; j < QMI_UIM_APPS_MAX_V01 ; j++) {
@@ -507,7 +520,9 @@ int getPinState(){
        	   	   	   	   	   Other values are reserved for the future and are to be handled as
        	   	   	   	   ``Unknown''.
 				 */
+#ifdef DEBUG
 				LOG("Type application=%d\n",qmi_response.card_status.card_info[i].app_info[j].app_type);
+#endif //DEBUG
 
 				/**<   Indicates the state of the application. Valid values:\n
         			- 0 -- Unknown\n
@@ -519,31 +534,47 @@ int getPinState(){
         			- 6 -- Illegal\n
         			- 7 -- Ready
 				*/
+#ifdef DEBUG
 				LOG("State of application=%d\n",qmi_response.card_status.card_info[i].app_info[j].app_state);
+#endif //DEBUG
 
 				if (((qmi_response.card_status.card_info[i].app_info[j].app_type == 1) ||
 				(qmi_response.card_status.card_info[i].app_info[j].app_type == 2)) &&
 				(qmi_response.card_status.card_info[i].app_info[j].app_state ==	UIM_APP_STATE_READY_V01)) {
+#ifdef DEBUG
 					LOG("card READY\n");
 					LOG("card_info[i].app_type : 0x%x\n", qmi_response.card_status.card_info[i].app_info[j].app_type);
 					LOG("card_info[i].app_state : 0x%x\n",qmi_response.card_status.card_info[i].app_info[j].app_state);
+#endif //DEBUG
 					card_found = 1;
+					break;
+				}else
+				if((qmi_response.card_status.card_info[i].app_info[j].app_type == 2) &&
+					(qmi_response.card_status.card_info[i].app_info[j].app_state ==	UIM_APP_STATE_PIN1_OR_UPIN_REQ_V01)){
+
+#ifdef DEBUG
+					LOG("card need verified\n");
+					LOG("card_info[i].app_type : 0x%x\n", qmi_response.card_status.card_info[i].app_info[j].app_type);
+					LOG("card_info[i].app_state : 0x%x\n",qmi_response.card_status.card_info[i].app_info[j].app_state);
+#endif //DEBUG
+					card_found = 2;
 					break;
 				}
 			}
 		}
 		if (card_found) {
+#ifdef DEBUG
 			LOG("card found\n");
+#endif //DEBUG
 			break;
 		}
 	}
 	qmiuimdemo_qmi_release();
-
 	return card_found;
 }
 
 int VerifyPIN(char *pin){
-	uim_verify_pin_req_msg_v01 	request;
+	uim_verify_pin_req_msg_v01 	request={0};
 	uim_verify_pin_resp_msg_v01	qmi_response;
 	qmi_client_error_type		qmi_err_code = 0;
 
