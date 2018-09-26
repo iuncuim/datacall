@@ -17,7 +17,7 @@ TARGET_BIN_DIR = $(MAIN_DIR)/bin
 TARGET_OBJ_DIR = $(MAIN_DIR)/obj
 TARGET_OBJ_DIR1= $(MAIN_DIR)/obj1
 
-BIN_NAME  = demo_data_call
+BIN_NAME  = datacall
 BIN_NAME1 = datacall_cli
 
 TEST_DIR = $(MAIN_DIR)
@@ -43,7 +43,7 @@ OBJ_CMD = -o
 
 LD_CMD = -o
 
-TEST_OBJS = $(TARGET_OBJ_DIR)/demo_data_call.o \
+TEST_OBJS = $(TARGET_OBJ_DIR)/datacall.o \
 
 
 TEST_OBJS1 = $(TARGET_OBJ_DIR1)/datacall_cli.o $(TARGET_OBJ_DIR1)/qminasdemo.o $(TARGET_OBJ_DIR1)/qmiuimdemo.o \
