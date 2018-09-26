@@ -6,6 +6,7 @@
 #include "qmi_client.h"
 #include "user_identity_module_v01.h"
 
+
 #define LOG printf
 //#define DEBUG
 
@@ -15,6 +16,8 @@ static qmi_idl_service_object_type qmiuimdemo_uim_svc_obj;
 static qmi_client_type             qmiuimdemo_uim_svc_client;
 static qmi_client_os_params        qmiuimdemo_uim_os_params;
 static qmi_client_type             qmiuimdemo_uim_notifier;
+
+
 
 static char qmiuimdemo_bin_to_hexchar
 (
@@ -295,6 +298,9 @@ int qmiuimdemo_qmi_init(void)
   return 0;
 }
 
+
+
+
 char * qmiuimdemo_get_imsi(void )
 {
   uim_read_transparent_req_msg_v01 read_params;
@@ -399,6 +405,8 @@ void qmiuimdemo_qmi_release(void)
 {
   qmi_client_release(qmiuimdemo_uim_svc_client);
 }
+
+
 
 int get_IMSI(int argc , char ** argv)
 {
@@ -617,7 +625,6 @@ int VerifyPIN(char *pin){
 	qmiuimdemo_qmi_release();
 	return 1;
 }
-
 
 
 

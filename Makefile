@@ -46,7 +46,7 @@ LD_CMD = -o
 TEST_OBJS = $(TARGET_OBJ_DIR)/datacall.o \
 
 
-TEST_OBJS1 = $(TARGET_OBJ_DIR1)/datacall_cli.o $(TARGET_OBJ_DIR1)/qminasdemo.o $(TARGET_OBJ_DIR1)/qmiuimdemo.o \
+TEST_OBJS1 = $(TARGET_OBJ_DIR1)/datacall_cli.o $(TARGET_OBJ_DIR1)/qminasdemo.o $(TARGET_OBJ_DIR1)/qmiuimdemo.o $(TARGET_OBJ_DIR1)/qmiwdsdemo.o $(TARGET_OBJ_DIR1)/qmidmsdemo.o \
 	    
 			   
 BIN_OBJS = $(TEST_OBJS) 

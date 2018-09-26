@@ -18,7 +18,7 @@ static const struct option longOpts[] = {
 		{"get-imei",no_argument, NULL,'I'},
 		{"get-ccid",no_argument, NULL,'c'},
 		{"get-rssi",no_argument, NULL,'r'},
-		{"verify-pin",required_argument, NULL,'r'},
+		{"verify-pin",required_argument, NULL,'V'},
 		{"help", no_argument, NULL,'h'},
 		{ NULL, no_argument, NULL, 0 }
 };
@@ -90,11 +90,17 @@ int main( int argc, char *argv[] )
 		 }
 		 break;
 	 case 's':
+		 if(GetStatusConnection()){
+			 printf("\"connected\"\n");
+		 }else{
+			 printf("\"disconnected\"\n");
+		 }
 		 break;
 	 case 'i':
 		 get_IMSI();
 		 break;
 	 case 'I':
+		 GetIMEI();
 		 break;
 	 case 'c':
 		 get_ICCID();
