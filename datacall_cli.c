@@ -100,7 +100,7 @@ int main( int argc, char *argv[] )
 		 get_IMSI();
 		 break;
 	 case 'I':
-		 GetIMEI();
+		 return GetIMEI();
 		 break;
 	 case 'c':
 		 get_ICCID();

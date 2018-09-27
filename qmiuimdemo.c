@@ -612,12 +612,16 @@ int VerifyPIN(char *pin){
                             sizeof(qmi_response),
                             10000);
 	if (qmi_err_code != QMI_NO_ERR){
+#ifdef DEBUG
 		LOG("qmi verify PIN err=%d\n",qmi_err_code);
+#endif //DEBUG
 		qmiuimdemo_qmi_release();
 		return -1;
 	}
 	if(qmi_response.resp.result != QMI_NO_ERR ){
+#ifdef DEBUG
 		LOG("qmi request verify PIN err=%d\n",qmi_response.resp.error);
+#endif //DEBUG
 		qmiuimdemo_qmi_release();
 		return -1;
 	}

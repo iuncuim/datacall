@@ -10,7 +10,7 @@
 #include "network_access_service_v01.h"
 
 #define LOG printf
-#define DEBUG
+//#define DEBUG
 
 static qmi_idl_service_object_type qmiuimdemo_dms_svc_obj=NULL;
 static qmi_client_type             qmiuimdemo_dms_svc_client;
@@ -38,42 +38,29 @@ static void qmidmsdemo_ind_cb
 }
 
 
-qmi_service_info       service_info_array[10];
-unsigned int num_entries;
- unsigned int num_services;
 int qmidmsdemo_qmi_init(void)
 {
   qmi_client_error_type client_err = QMI_NO_ERR;
   int num_retries = 0;
 
   num_retries = qmi_init(NULL,NULL);
+#ifdef DEBUG
   LOG("qmi_init=%d\n",num_retries);
+#endif //DEBUG
   num_retries = 0;
 
   qmiuimdemo_dms_svc_obj = dms_get_service_object_v01();
+#ifdef DEBUG
   LOG("qmiuimdemo_dms_svc_obj=%d\n",qmiuimdemo_dms_svc_obj);
-
-//  num_entries = 9;
-//  client_err = qmi_client_get_service_list(qmiuimdemo_dms_svc_obj,service_info_array,&num_entries, &num_services);
-//  if(client_err != QMI_NO_ERR){
-//	  LOG("Get service list err=%d\n",client_err);
-//	  return 0;
-//  }
-//
-//  client_err = qmi_client_init(service_info_array, qmiuimdemo_dms_svc_obj,qmidmsdemo_ind_cb, NULL,
-//		   &qmiuimdemo_dms_os_params,
-//		   &qmiuimdemo_dms_svc_client);
-//
-//  if(client_err != QMI_NO_ERR){
-//	  LOG("Client init err=%d\n",client_err);
-//	  return 0;
-//  }
+#endif //DEBUG
 
 
   do {
        if ( num_retries != 0) {
          sleep(1);
+#ifdef DEBUG
          LOG("qmi_client_init_instance status retry : %d\n", num_retries);
+#endif //DEBUG
        }
 
        memset(&qmiuimdemo_dms_os_params, 0, sizeof(qmi_client_os_params));
@@ -86,9 +73,11 @@ int qmidmsdemo_qmi_init(void)
                                                (int) 10,
                                                &qmiuimdemo_dms_svc_client);
        num_retries++;
+#ifdef DEBUG
        if(client_err != QMI_NO_ERR){
     	   LOG("Client init err=%d\n",client_err);
        }
+#endif //DEBUG
    } while ( (client_err != QMI_NO_ERR) && (num_retries < 3) );
 
 
@@ -127,7 +116,7 @@ int GetIMEI(){
 		LOG("qmi get IMEI err=%d\n",qmi_err_code);
 #endif //#ifdef DEBUG
 		qmidmsdemo_qmi_release();
-		return 0;
+		return -1;
 	}
 
 	if(qmi_response.resp.result != QMI_NO_ERR ){
@@ -135,22 +124,22 @@ int GetIMEI(){
 		LOG("qmi get IMEI response err=%d\n",qmi_response.resp.error);
 #endif //#ifdef DEBUG
 		qmidmsdemo_qmi_release();
-		return 0;
+		return -1;
 	}
 
 	if(qmi_response.imei_valid){
 #ifdef DEBUG
 		LOG("IMEI =%s\n",qmi_response.imei);
 #endif //#ifdef DEBUG
-		printf("%s\n",qmi_response.imei);
+		printf("\"%s\"\n",qmi_response.imei);
 		qmidmsdemo_qmi_release();
-		return 1;
+		return 0;
 	}else{
 #ifdef DEBUG
 		LOG("No valid IMEI\n");
 #endif //#ifdef DEBUG
 		qmidmsdemo_qmi_release();
-		return 0;
+		return -1;
 	}
 
 }
