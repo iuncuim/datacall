@@ -614,16 +614,16 @@ int VerifyPIN(char *pin){
 	if (qmi_err_code != QMI_NO_ERR){
 		LOG("qmi verify PIN err=%d\n",qmi_err_code);
 		qmiuimdemo_qmi_release();
-		return 0;
+		return -1;
 	}
 	if(qmi_response.resp.result != QMI_NO_ERR ){
 		LOG("qmi request verify PIN err=%d\n",qmi_response.resp.error);
 		qmiuimdemo_qmi_release();
-		return 0;
+		return -1;
 	}
 
 	qmiuimdemo_qmi_release();
-	return 1;
+	return 0;
 }
 
 

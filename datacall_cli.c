@@ -109,7 +109,7 @@ int main( int argc, char *argv[] )
 		 get_RSSI();
 		 break;
 	 case 'V':
-		 VerifyPIN(optarg);
+		  return VerifyPIN(optarg);
 		 break;
 	 case 'h':
 	 case '?':
