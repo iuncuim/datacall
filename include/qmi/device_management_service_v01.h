@@ -45,7 +45,7 @@
  *====*====*====*====*====*====*====*====*====*====*====*====*====*====*====*/
 
 /* This file was generated with Tool version 6.14.7 
-   It was generated on: Wed May 11 2016 (Spin 0)
+   It was generated on: Wed Jan 11 2017 (Spin 0)
    From IDL File: device_management_service_v01.idl */
 
 /** @defgroup dms_qmi_consts Constant values defined in the IDL */
@@ -71,11 +71,11 @@ extern "C" {
 /** Major Version Number of the IDL used to generate this file */
 #define DMS_V01_IDL_MAJOR_VERS 0x01
 /** Revision Number of the IDL used to generate this file */
-#define DMS_V01_IDL_MINOR_VERS 0x37
+#define DMS_V01_IDL_MINOR_VERS 0x39
 /** Major Version Number of the qmi_idl_compiler used to generate this file */
 #define DMS_V01_IDL_TOOL_VERS 0x06
 /** Maximum Defined Message ID */
-#define DMS_V01_MAX_MESSAGE_ID 0x0067
+#define DMS_V01_MAX_MESSAGE_ID 0x0068
 /**
     @}
   */
@@ -129,6 +129,7 @@ extern "C" {
 #define QMI_DMS_IMAGE_VER_LEN_MAX_V01 128
 #define QMI_DMS_MAX_SUPPORTED_LTE_BANDS_V01 256
 #define QMI_DMS_TX_MODEM_LEVEL_MAX_V01 100
+//Add by simcom
 #define QMI_DMS_SEND_SDCARD_DATA_MAX_V01 512 //zhoupan add
 #define QMI_DMS_NV_DATA_LEN_V01 1024   //zhoupan add
 /**
@@ -232,6 +233,42 @@ typedef uint64_t dms_tds_band_capability_mask_v01;
 #define QMI_DMS_MASK_BAND_PREF_TDS_BANDD_V01 ((dms_tds_band_capability_mask_v01)0x0000000000000008ull) 
 #define QMI_DMS_MASK_BAND_PREF_TDS_BANDE_V01 ((dms_tds_band_capability_mask_v01)0x0000000000000010ull) 
 #define QMI_DMS_MASK_BAND_PREF_TDS_BANDF_V01 ((dms_tds_band_capability_mask_v01)0x0000000000000020ull) 
+/** @addtogroup dms_qmi_enums
+    @{
+  */
+typedef enum {
+  DMS_BIND_SUBSCRIPTION_ENUM_MIN_ENUM_VAL_V01 = -2147483647, /**< To force a 32 bit signed enum.  Do not change or use*/
+  DMS_PRIMARY_SUBS_V01 = 0x0001, /**<  Primary \n  */
+  DMS_SECONDARY_SUBS_V01 = 0x0002, /**<  Secondary \n  */
+  DMS_TERTIARY_SUBS_V01 = 0x0003, /**<  Tertiary   */
+  DMS_BIND_SUBSCRIPTION_ENUM_MAX_ENUM_VAL_V01 = 2147483647 /**< To force a 32 bit signed enum.  Do not change or use*/
+}dms_bind_subscription_enum_v01;
+/**
+    @}
+  */
+
+/** @addtogroup dms_qmi_aggregates
+    @{
+  */
+typedef struct {
+
+  dms_bind_subscription_enum_v01 subscription;
+  /**<   Subscription to which to bind. Values: \n
+      - DMS_PRIMARY_SUBS (0x0001) --  Primary \n 
+      - DMS_SECONDARY_SUBS (0x0002) --  Secondary \n 
+      - DMS_TERTIARY_SUBS (0x0003) --  Tertiary  
+ */
+
+  uint8_t enabled;
+  /**<   \n Device's IMS capability. Values:\n
+        - 1 - IMS is enabled \n 
+        - 0 - IMS is disabled \n 
+   */
+}dms_ims_capability_type_v01;  /* Type */
+/**
+    @}
+  */
+
 /** @addtogroup dms_qmi_messages
     @{
   */
@@ -488,14 +525,14 @@ typedef struct {
   */
 typedef enum {
   DMS_OPERATING_MODE_ENUM_MIN_ENUM_VAL_V01 = -2147483647, /**< To force a 32 bit signed enum.  Do not change or use*/
-  DMS_OP_MODE_ONLINE_V01 = 0x00, /**<  Online  */
-  DMS_OP_MODE_LOW_POWER_V01 = 0x01, /**<  Low power   */
-  DMS_OP_MODE_FACTORY_TEST_MODE_V01 = 0x02, /**<  Factory Test mode  */
-  DMS_OP_MODE_OFFLINE_V01 = 0x03, /**<  Offline  */
-  DMS_OP_MODE_RESETTING_V01 = 0x04, /**<  Resetting  */
-  DMS_OP_MODE_SHUTTING_DOWN_V01 = 0x05, /**<  Shutting down  */
-  DMS_OP_MODE_PERSISTENT_LOW_POWER_V01 = 0x06, /**<  Persistent low power  */
-  DMS_OP_MODE_MODE_ONLY_LOW_POWER_V01 = 0x07, /**<  Mode-only low power  */
+  DMS_OP_MODE_ONLINE_V01 = 0x00, /**<  Online \n */
+  DMS_OP_MODE_LOW_POWER_V01 = 0x01, /**<  Low power \n   */
+  DMS_OP_MODE_FACTORY_TEST_MODE_V01 = 0x02, /**<  Factory Test mode \n  */
+  DMS_OP_MODE_OFFLINE_V01 = 0x03, /**<  Offline \n  */
+  DMS_OP_MODE_RESETTING_V01 = 0x04, /**<  Resetting \n  */
+  DMS_OP_MODE_SHUTTING_DOWN_V01 = 0x05, /**<  Shutting down \n  */
+  DMS_OP_MODE_PERSISTENT_LOW_POWER_V01 = 0x06, /**<  Persistent low power \n  */
+  DMS_OP_MODE_MODE_ONLY_LOW_POWER_V01 = 0x07, /**<  Mode-only low power \n  */
   DMS_OP_MODE_NET_TEST_GW_V01 = 0x08, /**<  Conducting network test for GSM/WCDMA  */
   DMS_OPERATING_MODE_ENUM_MAX_ENUM_VAL_V01 = 2147483647 /**< To force a 32 bit signed enum.  Do not change or use*/
 }dms_operating_mode_enum_v01;
@@ -508,10 +545,10 @@ typedef enum {
   */
 typedef enum {
   DMS_UIM_STATE_ENUM_MIN_ENUM_VAL_V01 = -2147483647, /**< To force a 32 bit signed enum.  Do not change or use*/
-  DMS_UIM_INITIALIZATION_COMPLETED_V01 = 0x00, /**<  UIM initialization has completed  */
-  DMS_UIM_INITIALIZATION_FAILED_V01 = 0x01, /**<  UIM has failed  */
-  DMS_UIM_NOT_PRESENT_V01 = 0x02, /**<  UIM is not present  */
-  DMS_UIM_STATE_UNAVAILABLE_V01 = -1, /**<  UIM state is currently unavailable  */
+  DMS_UIM_INITIALIZATION_COMPLETED_V01 = 0x00, /**<  UIM initialization has completed \n  */
+  DMS_UIM_INITIALIZATION_FAILED_V01 = 0x01, /**<  UIM has failed \n */
+  DMS_UIM_NOT_PRESENT_V01 = 0x02, /**<  UIM is not present \n  */
+  DMS_UIM_STATE_UNAVAILABLE_V01 = -1, /**<  UIM state is unavailable  */
   DMS_UIM_STATE_ENUM_MAX_ENUM_VAL_V01 = 2147483647 /**< To force a 32 bit signed enum.  Do not change or use*/
 }dms_uim_state_enum_v01;
 /**
@@ -523,17 +560,17 @@ typedef enum {
   */
 typedef enum {
   DMS_ACTIVATION_STATE_ENUM_MIN_ENUM_VAL_V01 = -2147483647, /**< To force a 32 bit signed enum.  Do not change or use*/
-  DMS_ACTIVATION_NOT_ACTIVATED_V01 = 0x00, /**<  Service is not activated  */
-  DMS_ACTIVATION_ACTIVATED_V01 = 0x01, /**<  Service is activated  */
+  DMS_ACTIVATION_NOT_ACTIVATED_V01 = 0x00, /**<  Service is not activated \n */
+  DMS_ACTIVATION_ACTIVATED_V01 = 0x01, /**<  Service is activated \n */
   DMS_ACTIVATION_CONNECTING_V01 = 0x02, /**<  Activation connecting -- Network
-                connection is in progress for automatic activation of service  */
+                connection is in progress for automatic activation of service \n  */
   DMS_ACTIVATION_CONNECTED_V01 = 0x03, 
-  DMS_ACTIVATION_OTASP_SEC_AUTHENTICATED_V01 = 0x4, /**<  OTASP security is authenticated  */
-  DMS_ACTIVATION_OTASP_NAM_DOWNLOADED_V01 = 0x05, /**<  OTASP NAM is downloaded  */
-  DMS_ACTIVATION_OTASP_MDN_DOWNLOADED_V01 = 0x06, /**<  OTASP MDN is downloaded   */
-  DMS_ACTIVATION_OTASP_IMSI_DOWNLOADED_V01 = 0x07, /**<  OTASP IMSI downloaded  */
-  DMS_ACTIVATION_OTASP_PRL_DOWNLOADED_V01 = 0x08, /**<  OTASP PRL is downloaded  */
-  DMS_ACTIVATION_OTASP_SPC_DOWNLOADED_V01 = 0x09, /**<  OTASP SPC is downloaded  */
+  DMS_ACTIVATION_OTASP_SEC_AUTHENTICATED_V01 = 0x4, /**<  OTASP security is authenticated \n  */
+  DMS_ACTIVATION_OTASP_NAM_DOWNLOADED_V01 = 0x05, /**<  OTASP NAM is downloaded \n  */
+  DMS_ACTIVATION_OTASP_MDN_DOWNLOADED_V01 = 0x06, /**<  OTASP MDN is downloaded  \n  */
+  DMS_ACTIVATION_OTASP_IMSI_DOWNLOADED_V01 = 0x07, /**<  OTASP IMSI downloaded \n  */
+  DMS_ACTIVATION_OTASP_PRL_DOWNLOADED_V01 = 0x08, /**<  OTASP PRL is downloaded \n  */
+  DMS_ACTIVATION_OTASP_SPC_DOWNLOADED_V01 = 0x09, /**<  OTASP SPC is downloaded \n  */
   DMS_ACTIVATION_OTASP_SETTINGS_COMMITTED_V01 = 0x0A, /**<  OTASP settings are committed  */
   DMS_ACTIVATION_STATE_ENUM_MAX_ENUM_VAL_V01 = 2147483647 /**< To force a 32 bit signed enum.  Do not change or use*/
 }dms_activation_state_enum_v01;
@@ -547,7 +584,7 @@ typedef enum {
 typedef enum {
   DMS_WIRELESS_DISABLE_STATE_ENUM_MIN_ENUM_VAL_V01 = -2147483647, /**< To force a 32 bit signed enum.  Do not change or use*/
   DMS_WIRELESS_DISABLE_OFF_V01 = 0x00, /**<  Wireless disable switch is
-turned off  */
+turned off \n  */
   DMS_WIRELESS_DISABLE_ON_V01 = 0x01, /**<  Wireless disable switch is
 turned on  */
   DMS_WIRELESS_DISABLE_STATE_ENUM_MAX_ENUM_VAL_V01 = 2147483647 /**< To force a 32 bit signed enum.  Do not change or use*/
@@ -568,6 +605,7 @@ the device (could be the default PRL)  */
 /**
     @}
   */
+
 //zhusilin add start
 typedef struct {
   uint8_t  ds_port_mode;
@@ -575,13 +613,12 @@ typedef struct {
 }dms_serial_port_mode_type_v01;  /* Type */
 //zhusilin add end
 
-
 /** @addtogroup dms_qmi_enums
     @{
   */
 typedef enum {
   DMS_CDMA_LOCK_MODE_STATE_ENUM_MIN_ENUM_VAL_V01 = -2147483647, /**< To force a 32 bit signed enum.  Do not change or use*/
-  DMS_CDMA_LOCK_MODE_OFF_V01 = 0, /**<  Phone is not CDMA locked  */
+  DMS_CDMA_LOCK_MODE_OFF_V01 = 0, /**<  Phone is not CDMA locked \n  */
   DMS_CDMA_LOCK_MODE_ON_V01 = 1, /**<  Phone is CDMA locked  */
   DMS_CDMA_LOCK_MODE_STATE_ENUM_MAX_ENUM_VAL_V01 = 2147483647 /**< To force a 32 bit signed enum.  Do not change or use*/
 }dms_cdma_lock_mode_state_enum_v01;
@@ -590,7 +627,7 @@ typedef enum {
   */
 
 /**  Activation connected -- Network
-                connection is connected for automatic activation of service  */
+                connection is connected for automatic activation of service \n  */
 typedef uint64_t dms_subs_capability_mask_type_v01;
 #define DMS_SUBS_CAPABILITY_AMPS_V01 ((dms_subs_capability_mask_type_v01)0x00000001ull) /**<  AMPS  */
 #define DMS_SUBS_CAPABILITY_CDMA_V01 ((dms_subs_capability_mask_type_v01)0x00000002ull) /**<  CDMA  */
@@ -813,72 +850,73 @@ typedef struct {
   uint8_t activation_state_valid;  /**< Must be set to true if activation_state is being passed */
   dms_activation_state_enum_v01 activation_state;
   /**<   Service activation state. Values: \n
-       - 0x00 -- Service is not activated \n
-       - 0x01 -- Service is activated \n
-       - 0x02 -- Activation connecting -- Network
-                connection is in progress for automatic activation of service \n
-       - 0x03 -- Activation connected -- Network
-                connection is connected for automatic activation of service \n
-       - 0x04 -- OTASP security is authenticated \n
-       - 0x05 - OTASP NAM is downloaded \n
-       - 0x06 - OTASP MDN is downloaded \n
-       - 0x07 - OTASP IMSI downloaded \n
-       - 0x08 - OTASP PRL is downloaded \n
-       - 0x09 - OTASP SPC is downloaded \n
-       - 0x0A - OTASP settings are committed 
-  */
+      - DMS_ACTIVATION_NOT_ACTIVATED (0x00) --  Service is not activated \n
+      - DMS_ACTIVATION_ACTIVATED (0x01) --  Service is activated \n
+      - DMS_ACTIVATION_CONNECTING (0x02) --  Activation connecting -- Network
+                connection is in progress for automatic activation of service \n 
+      - DMS_ACTIVATION_CONNECTED (0x03) -- 
+      - DMS_ACTIVATION_OTASP_SEC_AUTHENTICATED (0x4) --  OTASP security is authenticated \n 
+      - DMS_ACTIVATION_OTASP_NAM_DOWNLOADED (0x05) --  OTASP NAM is downloaded \n 
+      - DMS_ACTIVATION_OTASP_MDN_DOWNLOADED (0x06) --  OTASP MDN is downloaded  \n 
+      - DMS_ACTIVATION_OTASP_IMSI_DOWNLOADED (0x07) --  OTASP IMSI downloaded \n 
+      - DMS_ACTIVATION_OTASP_PRL_DOWNLOADED (0x08) --  OTASP PRL is downloaded \n 
+      - DMS_ACTIVATION_OTASP_SPC_DOWNLOADED (0x09) --  OTASP SPC is downloaded \n 
+      - DMS_ACTIVATION_OTASP_SETTINGS_COMMITTED (0x0A) --  OTASP settings are committed  
+ */
 
   /* Optional */
   /*  Operating Mode */
   uint8_t operating_mode_valid;  /**< Must be set to true if operating_mode is being passed */
   dms_operating_mode_enum_v01 operating_mode;
   /**<   Current operating mode. Values: \n
-       - 0 -- Online \n
-       - 1 -- Low power \n
-       - 2 -- Factory Test mode \n
-       - 3 -- Offline \n
-       - 4 -- Resetting \n
-       - 5 -- Shutting down \n
-       - 6 -- Persistent low power \n
-       - 7 -- Mode-only low power \n
-       - 8 -- Conducting network test for GSM/WCDMA
-  */
+      - DMS_OP_MODE_ONLINE (0x00) --  Online \n
+      - DMS_OP_MODE_LOW_POWER (0x01) --  Low power \n  
+      - DMS_OP_MODE_FACTORY_TEST_MODE (0x02) --  Factory Test mode \n 
+      - DMS_OP_MODE_OFFLINE (0x03) --  Offline \n 
+      - DMS_OP_MODE_RESETTING (0x04) --  Resetting \n 
+      - DMS_OP_MODE_SHUTTING_DOWN (0x05) --  Shutting down \n 
+      - DMS_OP_MODE_PERSISTENT_LOW_POWER (0x06) --  Persistent low power \n 
+      - DMS_OP_MODE_MODE_ONLY_LOW_POWER (0x07) --  Mode-only low power \n 
+      - DMS_OP_MODE_NET_TEST_GW (0x08) --  Conducting network test for GSM/WCDMA 
+ */
 
   /* Optional */
   /*  UIM State (Deprecated)  */
   uint8_t uim_state_valid;  /**< Must be set to true if uim_state is being passed */
   dms_uim_state_enum_v01 uim_state;
   /**<   UIM state. Values: \n
-       - 0x00 -- UIM initialization completed \n
-       - 0x01 -- UIM failed \n
-       - 0x02 -- UIM is not present \n
-       - 0xFF -- UIM state is currently unavailable
-  */
+      - DMS_UIM_INITIALIZATION_COMPLETED (0x00) --  UIM initialization has completed \n 
+      - DMS_UIM_INITIALIZATION_FAILED (0x01) --  UIM has failed \n
+      - DMS_UIM_NOT_PRESENT (0x02) --  UIM is not present \n 
+      - DMS_UIM_STATE_UNAVAILABLE (-1) --  UIM state is unavailable 
+ */
 
   /* Optional */
   /*  Wireless Disable State */
   uint8_t wireless_disable_state_valid;  /**< Must be set to true if wireless_disable_state is being passed */
   dms_wireless_disable_state_enum_v01 wireless_disable_state;
   /**<   Wireless disable state. Values: \n
-       - 0x00 -- Wireless disable switch is turned off \n
-       - 0x01 -- Wireless disable switch is turned on
-  */
+      - DMS_WIRELESS_DISABLE_OFF (0x00) --  Wireless disable switch is
+turned off \n 
+      - DMS_WIRELESS_DISABLE_ON (0x01) --  Wireless disable switch is
+turned on 
+ */
 
   /* Optional */
   /*  PRL Init Notification */
   uint8_t prl_init_valid;  /**< Must be set to true if prl_init is being passed */
   dms_prl_init_enum_v01 prl_init;
   /**<   PRL initialized. Values: \n
-       - 0x01 -- PRL is completely loaded into the device
-       (could be the default PRL). 
-  */
+      - DMS_PRL_INIT_COMPLETED (0x01) --  PRL is completely loaded into
+the device (could be the default PRL)  
+ */
 
   /* Optional */
   /*  CDMA Lock Mode State */
   uint8_t cdma_lock_mode_state_valid;  /**< Must be set to true if cdma_lock_mode_state is being passed */
   dms_cdma_lock_mode_state_enum_v01 cdma_lock_mode_state;
   /**<   CDMA Lock mode state. Values: \n
-      - DMS_CDMA_LOCK_MODE_OFF (0) --  Phone is not CDMA locked 
+      - DMS_CDMA_LOCK_MODE_OFF (0) --  Phone is not CDMA locked \n 
       - DMS_CDMA_LOCK_MODE_ON (1) --  Phone is CDMA locked  
  */
 
@@ -954,11 +992,11 @@ typedef struct {
              - "-1" - modem controlled configuration \n 
              - "Any other valid value" - HLOS selected static configuration and 
               points to an index in list of device_cfg_list of “device_config_list” TLV.
-  */
-   //zhusilin add start
+   */
+  //zhusilin add start
   uint8_t serial_port_mode_valid;
   dms_serial_port_mode_type_v01 serial_port_mode;
- //zhusilin add end
+  //zhusilin add end
 }dms_event_report_ind_msg_v01;  /* Message */
 /**
     @}
@@ -971,7 +1009,7 @@ typedef struct {
 typedef struct {
 
   /* Optional */
-  /*  Power Save Mode status */
+  /*  Power Save Mode Status */
   uint8_t report_psm_status_valid;  /**< Must be set to true if report_psm_status is being passed */
   uint8_t report_psm_status;
   /**<   Values: \n
@@ -986,6 +1024,15 @@ typedef struct {
   /**<   Values: \n
 	  - 0 -- Do not report \n
 	  - 1 -- Report Power Save Mode cfg changes 
+  */
+
+  /* Optional */
+  /*  Report IMS capability  */
+  uint8_t report_ims_capability_valid;  /**< Must be set to true if report_ims_capability is being passed */
+  uint8_t report_ims_capability;
+  /**<   Values: \n
+	  - 0 -- Do not report \n
+	  - 1 -- Report IMS capability 
   */
 }dms_indication_register_req_msg_v01;  /* Message */
 /**
@@ -1026,12 +1073,12 @@ typedef struct {
   */
 typedef enum {
   DMS_DATA_SERVICE_CAPABILITY_ENUM_MIN_ENUM_VAL_V01 = -2147483647, /**< To force a 32 bit signed enum.  Do not change or use*/
-  DMS_DATA_CAP_NONE_V01 = 0x00, /**<  No data services supported  */
+  DMS_DATA_CAP_NONE_V01 = 0x00, /**<  No data services supported \n  */
   DMS_DATA_CAP_CS_ONLY_V01 = 0x01, /**<  Only circuit-switched (CS) services
-are supported  */
+are supported \n  */
   DMS_DATA_CAP_PS_ONLY_V01 = 0x02, /**<  Only packet-switched (PS) services
-are supported  */
-  DMS_DATA_CAP_SIMUL_CS_AND_PS_V01 = 0x03, /**<  Simultaneous CS and PS  */
+are supported \n  */
+  DMS_DATA_CAP_SIMUL_CS_AND_PS_V01 = 0x03, /**<  Simultaneous CS and PS \n  */
   DMS_DATA_CAP_NONSIMUL_CS_AND_PS_V01 = 0x04, /**<  Nonsimultaneous CS and PS  */
   DMS_DATA_SERVICE_CAPABILITY_ENUM_MAX_ENUM_VAL_V01 = 2147483647 /**< To force a 32 bit signed enum.  Do not change or use*/
 }dms_data_service_capability_enum_v01;
@@ -1044,7 +1091,7 @@ are supported  */
   */
 typedef enum {
   DMS_SIM_CAPABILITY_ENUM_MIN_ENUM_VAL_V01 = -2147483647, /**< To force a 32 bit signed enum.  Do not change or use*/
-  DMS_SIM_NOT_SUPPORTED_V01 = 0x01, /**<  SIM is not supported  */
+  DMS_SIM_NOT_SUPPORTED_V01 = 0x01, /**<  SIM is not supported \n */
   DMS_SIM_SUPPORTED_V01 = 0x02, /**<  SIM is supported  */
   DMS_SIM_CAPABILITY_ENUM_MAX_ENUM_VAL_V01 = 2147483647 /**< To force a 32 bit signed enum.  Do not change or use*/
 }dms_sim_capability_enum_v01;
@@ -1057,11 +1104,11 @@ typedef enum {
   */
 typedef enum {
   DMS_RADIO_IF_ENUM_MIN_ENUM_VAL_V01 = -2147483647, /**< To force a 32 bit signed enum.  Do not change or use*/
-  DMS_RADIO_IF_1X_V01 = 0x01, /**<  CDMA2000 1X  */
-  DMS_RADIO_IF_1X_EVDO_V01 = 0x02, /**<  CDMA2000 HRPD (1xEV-DO)  */
-  DMS_RADIO_IF_GSM_V01 = 0x04, /**<  GSM */
-  DMS_RADIO_IF_UMTS_V01 = 0x05, /**<  UMTS   */
-  DMS_RADIO_IF_LTE_V01 = 0x08, /**<  LTE  */
+  DMS_RADIO_IF_1X_V01 = 0x01, /**<  CDMA2000 1X \n */
+  DMS_RADIO_IF_1X_EVDO_V01 = 0x02, /**<  CDMA2000 HRPD (1xEV-DO) \n */
+  DMS_RADIO_IF_GSM_V01 = 0x04, /**<  GSM \n */
+  DMS_RADIO_IF_UMTS_V01 = 0x05, /**<  UMTS \n  */
+  DMS_RADIO_IF_LTE_V01 = 0x08, /**<  LTE \n */
   DMS_RADIO_IF_TDS_V01 = 0x09, /**<  TDS  */
   DMS_RADIO_IF_ENUM_MAX_ENUM_VAL_V01 = 2147483647 /**< To force a 32 bit signed enum.  Do not change or use*/
 }dms_radio_if_enum_v01;
@@ -1074,9 +1121,9 @@ typedef enum {
   */
 typedef enum {
   DMS_DEVICE_SERVICE_CAPABILITY_ENUM_MIN_ENUM_VAL_V01 = -2147483647, /**< To force a 32 bit signed enum.  Do not change or use*/
-  DMS_DEVICE_CAP_DATA_ONLY_V01 = 0x01, /**<  Only data services are supported  */
-  DMS_DEVICE_CAP_VOICE_ONLY_V01 = 0x02, /**<   Only voice services are supported  */
-  DMS_DEVICE_CAP_SIMUL_VOICE_AND_DATA_V01 = 0x03, /**<  Simultaneous voice and data  */
+  DMS_DEVICE_CAP_DATA_ONLY_V01 = 0x01, /**<  Only data services are supported \n  */
+  DMS_DEVICE_CAP_VOICE_ONLY_V01 = 0x02, /**<   Only voice services are supported \n */
+  DMS_DEVICE_CAP_SIMUL_VOICE_AND_DATA_V01 = 0x03, /**<  Simultaneous voice and data \n  */
   DMS_DEVICE_CAP_NONSIMUL_VOICE_AND_DATA_V01 = 0x04, /**<  Nonsimultaneous voice and data  */
   DMS_DEVICE_SERVICE_CAPABILITY_ENUM_MAX_ENUM_VAL_V01 = 2147483647 /**< To force a 32 bit signed enum.  Do not change or use*/
 }dms_device_service_capability_enum_v01;
@@ -1085,9 +1132,9 @@ typedef enum {
   */
 
 typedef uint64_t dms_voice_support_capability_mask_v01;
-#define QMI_DMS_MASK_VOICE_SUPPORT_GW_CSFB_CAPABLE_V01 ((dms_voice_support_capability_mask_v01)0x0001ull) 
-#define QMI_DMS_MASK_VOICE_SUPPORT_1x_CSFB_CAPABLE_V01 ((dms_voice_support_capability_mask_v01)0x0002ull) 
-#define QMI_DMS_MASK_VOICE_SUPPORT_VOLTE_CAPABLE_V01 ((dms_voice_support_capability_mask_v01)0x0004ull) 
+#define QMI_DMS_MASK_VOICE_SUPPORT_GW_CSFB_CAPABLE_V01 ((dms_voice_support_capability_mask_v01)0x0001ull) /**<    */
+#define QMI_DMS_MASK_VOICE_SUPPORT_1x_CSFB_CAPABLE_V01 ((dms_voice_support_capability_mask_v01)0x0002ull) /**<    */
+#define QMI_DMS_MASK_VOICE_SUPPORT_VOLTE_CAPABLE_V01 ((dms_voice_support_capability_mask_v01)0x0004ull) /**<    */
 typedef uint64_t dms_simul_voice_and_data_capability_mask_v01;
 #define QMI_DMS_MASK_SVLTE_CAPABLE_V01 ((dms_simul_voice_and_data_capability_mask_v01)0x0001ull) 
 #define QMI_DMS_MASK_SVDO_CAPABLE_V01 ((dms_simul_voice_and_data_capability_mask_v01)0x0002ull) 
@@ -1097,10 +1144,10 @@ typedef uint64_t dms_simul_voice_and_data_capability_mask_v01;
   */
 typedef enum {
   DMS_DEVICE_SUBS_FEATURE_MODE_ENUM_MIN_ENUM_VAL_V01 = -2147483647, /**< To force a 32 bit signed enum.  Do not change or use*/
-  DMS_DEVICE_SUBS_FEATURE_MODE_NORMAL_V01 = 0, /**<  Normal  */
-  DMS_DEVICE_SUBS_FEATURE_MODE_SGLTE_V01 = 1, /**<  SGLTE  */
-  DMS_DEVICE_SUBS_FEATURE_MODE_SVLTE_V01 = 2, /**<  SVLTE  */
-  DMS_DEVICE_SUBS_FEATURE_MODE_SRLTE_V01 = 3, /**<  SRLTE  */
+  DMS_DEVICE_SUBS_FEATURE_MODE_NORMAL_V01 = 0, /**<  Normal \n  */
+  DMS_DEVICE_SUBS_FEATURE_MODE_SGLTE_V01 = 1, /**<  SGLTE \n  */
+  DMS_DEVICE_SUBS_FEATURE_MODE_SVLTE_V01 = 2, /**<  SVLTE \n  */
+  DMS_DEVICE_SUBS_FEATURE_MODE_SRLTE_V01 = 3, /**<  SRLTE \n  */
   DMS_DEVICE_SUBS_FEATURE_MODE_DUAL_MULTIMODE_V01 = 4, /**<  Dual multimode  */
   DMS_DEVICE_SUBS_FEATURE_MODE_ENUM_MAX_ENUM_VAL_V01 = 2147483647 /**< To force a 32 bit signed enum.  Do not change or use*/
 }dms_device_subs_feature_mode_enum_v01;
@@ -1130,30 +1177,32 @@ typedef struct {
   /*  Note: Below data item is deprecated from QMI DMS version 1.11 in favor of device_service_capability TLV */
   dms_data_service_capability_enum_v01 data_service_capability;
   /**<   Values: \n
-       - 0 -- No data services supported \n
-       - 1 -- Only circuit-switched (CS) services are supported \n
-       - 2 -- Only packet-switched (PS) services are supported \n
-       - 3 -- Simultaneous CS and PS \n
-       - 4 -- Nonsimultaneous CS and PS
-  */
+      - DMS_DATA_CAP_NONE (0x00) --  No data services supported \n 
+      - DMS_DATA_CAP_CS_ONLY (0x01) --  Only circuit-switched (CS) services
+are supported \n 
+      - DMS_DATA_CAP_PS_ONLY (0x02) --  Only packet-switched (PS) services
+are supported \n 
+      - DMS_DATA_CAP_SIMUL_CS_AND_PS (0x03) --  Simultaneous CS and PS \n 
+      - DMS_DATA_CAP_NONSIMUL_CS_AND_PS (0x04) --  Nonsimultaneous CS and PS 
+ */
 
   dms_sim_capability_enum_v01 sim_capability;
   /**<   Values: \n
-       - 1 -- SIM is not supported \n
-       - 2 -- SIM is supported
-  */
+      - DMS_SIM_NOT_SUPPORTED (0x01) --  SIM is not supported \n
+      - DMS_SIM_SUPPORTED (0x02) --  SIM is supported 
+ */
 
   uint32_t radio_if_list_len;  /**< Must be set to # of elements in radio_if_list */
   dms_radio_if_enum_v01 radio_if_list[QMI_DMS_RADIO_IF_LIST_MAX_V01];
   /**<   List of N one-byte elements describing the radio interfaces
-       supported by the device. Values: \n
-       - 1 -- CDMA2000 1X \n
-       - 2 -- CDMA2000 HRPD (1xEV-DO) \n
-       - 4 -- GSM \n
-       - 5 -- UMTS \n
-       - 8 -- LTE \n
-       - 9 -- TDS
-  */
+ supported by the device. Values: \n
+      - DMS_RADIO_IF_1X (0x01) --  CDMA2000 1X \n
+      - DMS_RADIO_IF_1X_EVDO (0x02) --  CDMA2000 HRPD (1xEV-DO) \n
+      - DMS_RADIO_IF_GSM (0x04) --  GSM \n
+      - DMS_RADIO_IF_UMTS (0x05) --  UMTS \n 
+      - DMS_RADIO_IF_LTE (0x08) --  LTE \n
+      - DMS_RADIO_IF_TDS (0x09) --  TDS 
+ */
 }dms_device_capabilities_type_v01;  /* Type */
 /**
     @}
@@ -1178,11 +1227,11 @@ typedef struct {
   uint8_t device_service_capability_valid;  /**< Must be set to true if device_service_capability is being passed */
   dms_device_service_capability_enum_v01 device_service_capability;
   /**<   Values: \n
-       - 1 -- Only data services are supported \n
-       - 2 -- Only voice services are supported \n
-       - 3 -- Simultaneous voice and data \n
-       - 4 -- Nonsimultaneous voice and data
-  */
+      - DMS_DEVICE_CAP_DATA_ONLY (0x01) --  Only data services are supported \n 
+      - DMS_DEVICE_CAP_VOICE_ONLY (0x02) --   Only voice services are supported \n
+      - DMS_DEVICE_CAP_SIMUL_VOICE_AND_DATA (0x03) --  Simultaneous voice and data \n 
+      - DMS_DEVICE_CAP_NONSIMUL_VOICE_AND_DATA (0x04) --  Nonsimultaneous voice and data 
+ */
 
   /* Optional */
   /*  Voice Support Capability */
@@ -1257,10 +1306,10 @@ typedef struct {
   uint32_t subs_device_feature_mode_len;  /**< Must be set to # of elements in subs_device_feature_mode */
   dms_device_subs_feature_mode_enum_v01 subs_device_feature_mode[QMI_DMS_MAX_SUBSCRIPTION_LIST_LEN_V01];
   /**<   Device feature mode of each subscription. Values: \n
-      - DMS_DEVICE_SUBS_FEATURE_MODE_NORMAL (0) --  Normal 
-      - DMS_DEVICE_SUBS_FEATURE_MODE_SGLTE (1) --  SGLTE 
-      - DMS_DEVICE_SUBS_FEATURE_MODE_SVLTE (2) --  SVLTE 
-      - DMS_DEVICE_SUBS_FEATURE_MODE_SRLTE (3) --  SRLTE 
+      - DMS_DEVICE_SUBS_FEATURE_MODE_NORMAL (0) --  Normal \n 
+      - DMS_DEVICE_SUBS_FEATURE_MODE_SGLTE (1) --  SGLTE \n 
+      - DMS_DEVICE_SUBS_FEATURE_MODE_SVLTE (2) --  SVLTE \n 
+      - DMS_DEVICE_SUBS_FEATURE_MODE_SRLTE (3) --  SRLTE \n 
       - DMS_DEVICE_SUBS_FEATURE_MODE_DUAL_MULTIMODE (4) --  Dual multimode 
  */
 
@@ -1307,6 +1356,22 @@ typedef struct {
              - "-1" - modem controlled configuration \n 
              - "Any other valid value" - HLOS selected static configuration and 
               points to an index in list of device_cfg_list of “device_config_list” TLV.
+  */
+
+  /* Optional */
+  /*  Device's IMS Capability */
+  uint8_t ims_capability_valid;  /**< Must be set to true if ims_capability is being passed */
+  uint32_t ims_capability_len;  /**< Must be set to # of elements in ims_capability */
+  dms_ims_capability_type_v01 ims_capability[QMI_DMS_MAX_SUBSCRIPTION_LIST_LEN_V01];
+  /**<   \n Device's IMS capability
+    */
+
+  /* Optional */
+  /*  Max IMS instances supported (Static capability) */
+  uint8_t max_ims_instances_valid;  /**< Must be set to true if max_ims_instances is being passed */
+  uint8_t max_ims_instances;
+  /**<   \n Maximum instances of IMS supported by the device 
+          (static capability)
   */
 }dms_get_device_cap_resp_msg_v01;  /* Message */
 /**
@@ -1628,7 +1693,7 @@ typedef struct {
   */
 typedef enum {
   DMS_PIN_ID_ENUM_MIN_ENUM_VAL_V01 = -2147483647, /**< To force a 32 bit signed enum.  Do not change or use*/
-  DMS_QMI_PIN_ID_PIN_1_V01 = 0x01, /**<  PIN1 (also called PIN)  */
+  DMS_QMI_PIN_ID_PIN_1_V01 = 0x01, /**<  PIN1 (also called PIN) \n  */
   DMS_QMI_PIN_ID_PIN_2_V01 = 0x02, /**<  PIN2  */
   DMS_PIN_ID_ENUM_MAX_ENUM_VAL_V01 = 2147483647 /**< To force a 32 bit signed enum.  Do not change or use*/
 }dms_pin_id_enum_v01;
@@ -1643,9 +1708,9 @@ typedef struct {
 
   dms_pin_id_enum_v01 pin_id;
   /**<   Specifies the ID of the PIN to be enabled or disabled. Values: \n
-       - 1 -- PIN1 (also called PIN) \n
-       - 2 -- PIN2
-  */
+      - DMS_QMI_PIN_ID_PIN_1 (0x01) --  PIN1 (also called PIN) \n 
+      - DMS_QMI_PIN_ID_PIN_2 (0x02) --  PIN2 
+ */
 
   uint8_t protection_setting_enabled;
   /**<   Specifies whether the PIN is enabled. Values: \n 
@@ -1656,8 +1721,8 @@ typedef struct {
   uint32_t pin_value_len;  /**< Must be set to # of elements in pin_value */
   uint8_t pin_value[QMI_DMS_PIN_VALUE_MAX_V01];
   /**<   Specifies the PIN value of the PIN to be enabled/disabled. The
-       protection setting is only changed if this value is
-       successfully verified by the SIM.
+       protection setting is only changed if the SIM
+       successfully verifies this value.
   */
 }dms_pin_protection_info_type_v01;  /* Type */
 /**
@@ -1723,9 +1788,9 @@ typedef struct {
 
   dms_pin_id_enum_v01 pin_id;
   /**<   Specifies the ID of the PIN to be enabled or disabled. Values: \n
-       - 1 -- PIN1 (also called PIN) \n
-       - 2 -- PIN2
-  */
+      - DMS_QMI_PIN_ID_PIN_1 (0x01) --  PIN1 (also called PIN) \n 
+      - DMS_QMI_PIN_ID_PIN_2 (0x02) --  PIN2 
+ */
 
   uint32_t pin_value_len;  /**< Must be set to # of elements in pin_value */
   uint8_t pin_value[QMI_DMS_PIN_VALUE_MAX_V01];
@@ -1778,9 +1843,9 @@ typedef struct {
 
   dms_pin_id_enum_v01 unblock_pin_id;
   /**<   Specifies the ID of the PIN to be unblocked. Values: \n
-       - 1 -- PIN1 (also called PIN) \n
-       - 2 -- PIN2
-  */
+      - DMS_QMI_PIN_ID_PIN_1 (0x01) --  PIN1 (also called PIN) \n 
+      - DMS_QMI_PIN_ID_PIN_2 (0x02) --  PIN2 
+ */
 
   uint32_t puk_value_len;  /**< Must be set to # of elements in puk_value */
   uint8_t puk_value[QMI_DMS_PUK_VALUE_MAX_V01];
@@ -1834,9 +1899,9 @@ typedef struct {
 
   dms_pin_id_enum_v01 pin_id;
   /**<   Specifies the ID of the PIN to be changed. Values: \n
-       - 1 -- PIN1 (also called PIN) \n
-       - 2 -- PIN2
-  */
+      - DMS_QMI_PIN_ID_PIN_1 (0x01) --  PIN1 (also called PIN) \n 
+      - DMS_QMI_PIN_ID_PIN_2 (0x02) --  PIN2 
+ */
 
   uint32_t old_pin_value_len;  /**< Must be set to # of elements in old_pin_value */
   uint8_t old_pin_value[QMI_DMS_PIN_VALUE_MAX_V01];
@@ -1985,15 +2050,16 @@ typedef struct {
   /*  Operating Mode */
   dms_operating_mode_enum_v01 operating_mode;
   /**<   Selected operating mode. Values: \n
-       - 0 -- Online \n
-       - 1 -- Low power \n
-       - 2 -- Factory Test mode \n
-       - 3 -- Offline \n
-       - 4 -- Resetting \n
-       - 5 -- Shutting down \n
-       - 6 -- Persistent low power \n
-       - 8 -- Conducting network test for GSM/WCDMA
-  */
+      - DMS_OP_MODE_ONLINE (0x00) --  Online \n
+      - DMS_OP_MODE_LOW_POWER (0x01) --  Low power \n  
+      - DMS_OP_MODE_FACTORY_TEST_MODE (0x02) --  Factory Test mode \n 
+      - DMS_OP_MODE_OFFLINE (0x03) --  Offline \n 
+      - DMS_OP_MODE_RESETTING (0x04) --  Resetting \n 
+      - DMS_OP_MODE_SHUTTING_DOWN (0x05) --  Shutting down \n 
+      - DMS_OP_MODE_PERSISTENT_LOW_POWER (0x06) --  Persistent low power \n 
+      - DMS_OP_MODE_MODE_ONLY_LOW_POWER (0x07) --  Mode-only low power \n 
+      - DMS_OP_MODE_NET_TEST_GW (0x08) --  Conducting network test for GSM/WCDMA 
+ */
 
   /* Optional */
   /*  Offline Reason */
@@ -2013,7 +2079,7 @@ typedef struct {
   uint8_t hardware_controlled_mode_valid;  /**< Must be set to true if hardware_controlled_mode is being passed */
   uint8_t hardware_controlled_mode;
   /**<   Hardware-Restricted mode. Values: \n
-       - 0x01 -- TRUE
+       - 0x01 -- TRUE 
   */
 }dms_get_operating_mode_resp_msg_v01;  /* Message */
 /**
@@ -2029,16 +2095,17 @@ typedef struct {
   /* Mandatory */
   /*  Operating Mode */
   dms_operating_mode_enum_v01 operating_mode;
-  /**<   Selected operating mode. Values:  \n
-       - 0 -- Online \n
-       - 1 -- Low power \n
-       - 2 -- Factory Test mode \n
-       - 3 -- Offline \n
-       - 4 -- Resetting \n
-       - 5 -- Shutting down \n
-       - 6 -- Persistent low power \n
-       - 7 -- Mode-only low power
-  */
+  /**<   Selected operating mode. Values: \n
+      - DMS_OP_MODE_ONLINE (0x00) --  Online \n
+      - DMS_OP_MODE_LOW_POWER (0x01) --  Low power \n  
+      - DMS_OP_MODE_FACTORY_TEST_MODE (0x02) --  Factory Test mode \n 
+      - DMS_OP_MODE_OFFLINE (0x03) --  Offline \n 
+      - DMS_OP_MODE_RESETTING (0x04) --  Resetting \n 
+      - DMS_OP_MODE_SHUTTING_DOWN (0x05) --  Shutting down \n 
+      - DMS_OP_MODE_PERSISTENT_LOW_POWER (0x06) --  Persistent low power \n 
+      - DMS_OP_MODE_MODE_ONLY_LOW_POWER (0x07) --  Mode-only low power \n 
+      - DMS_OP_MODE_NET_TEST_GW (0x08) --  Conducting network test for GSM/WCDMA 
+ */
 }dms_set_operating_mode_req_msg_v01;  /* Message */
 /**
     @}
@@ -2078,8 +2145,8 @@ typedef struct {
   */
 typedef enum {
   DMS_TIME_SOURCE_ENUM_MIN_ENUM_VAL_V01 = -2147483647, /**< To force a 32 bit signed enum.  Do not change or use*/
-  DMS_TIME_SOURCE_DEVICE_CLOCK_V01 = 0x00, /**<  32 kHz device clock  */
-  DMS_TIME_SOURCE_CDMA_V01 = 0x01, /**<  CDMA network  */
+  DMS_TIME_SOURCE_DEVICE_CLOCK_V01 = 0x00, /**<  32 kHz device clock \n  */
+  DMS_TIME_SOURCE_CDMA_V01 = 0x01, /**<  CDMA network \n  */
   DMS_TIME_SOURCE_HDR_V01 = 0x02, /**<  HDR network  */
   DMS_TIME_SOURCE_ENUM_MAX_ENUM_VAL_V01 = 2147483647 /**< To force a 32 bit signed enum.  Do not change or use*/
 }dms_time_source_enum_v01;
@@ -2099,10 +2166,10 @@ typedef struct {
 
   dms_time_source_enum_v01 time_source;
   /**<   Source of the timestamp. Values: \n 
-       - 0 -- 32 kHz device clock \n
-       - 1 -- CDMA network \n
-       - 2 -- HDR network
-  */
+      - DMS_TIME_SOURCE_DEVICE_CLOCK (0x00) --  32 kHz device clock \n 
+      - DMS_TIME_SOURCE_CDMA (0x01) --  CDMA network \n 
+      - DMS_TIME_SOURCE_HDR (0x02) --  HDR network 
+ */
 }dms_device_time_type_v01;  /* Type */
 /**
     @}
@@ -2218,20 +2285,19 @@ typedef struct {
   /*  Activation State */
   dms_activation_state_enum_v01 activation_state;
   /**<   Service activation state. Values: \n
-       - 0x00 -- Service is not activated \n
-       - 0x01 --Service is activated \n
-       - 0x02 -- Activation is connecting - Network
-                connection in progress for automatic activation of service \n
-       - 0x03 -- Activation is connected - Network
-                connection is connected for automatic activation of service \n
-       - 0x04 -- OTASP security is authenticated \n
-       - 0x05 -- OTASP NAM is downloaded \n
-       - 0x06 -- OTASP MDN is downloaded \n
-       - 0x07 -- OTASP IMSI is downloaded \n
-       - 0x08 -- OTASP PRL is downloaded \n
-       - 0x09 -- OTASP SPC is downloaded \n
-       - 0x0A -- OTASP settings are committed 
-  */
+      - DMS_ACTIVATION_NOT_ACTIVATED (0x00) --  Service is not activated \n
+      - DMS_ACTIVATION_ACTIVATED (0x01) --  Service is activated \n
+      - DMS_ACTIVATION_CONNECTING (0x02) --  Activation connecting -- Network
+                connection is in progress for automatic activation of service \n 
+      - DMS_ACTIVATION_CONNECTED (0x03) -- 
+      - DMS_ACTIVATION_OTASP_SEC_AUTHENTICATED (0x4) --  OTASP security is authenticated \n 
+      - DMS_ACTIVATION_OTASP_NAM_DOWNLOADED (0x05) --  OTASP NAM is downloaded \n 
+      - DMS_ACTIVATION_OTASP_MDN_DOWNLOADED (0x06) --  OTASP MDN is downloaded  \n 
+      - DMS_ACTIVATION_OTASP_IMSI_DOWNLOADED (0x07) --  OTASP IMSI downloaded \n 
+      - DMS_ACTIVATION_OTASP_PRL_DOWNLOADED (0x08) --  OTASP PRL is downloaded \n 
+      - DMS_ACTIVATION_OTASP_SPC_DOWNLOADED (0x09) --  OTASP SPC is downloaded \n 
+      - DMS_ACTIVATION_OTASP_SETTINGS_COMMITTED (0x0A) --  OTASP settings are committed  
+ */
 }dms_get_activation_state_resp_msg_v01;  /* Message */
 /**
     @}
@@ -2436,8 +2502,8 @@ typedef struct {
   */
 typedef enum {
   DMS_LOCK_STATE_ENUM_MIN_ENUM_VAL_V01 = -2147483647, /**< To force a 32 bit signed enum.  Do not change or use*/
-  DMS_LOCK_DISABLED_V01 = 0x00, /**<  Disabled  */
-  DMS_LOCK_ENABLED_V01 = 0x01, /**<  Disabled  */
+  DMS_LOCK_DISABLED_V01 = 0x00, /**<  Disabled \n  */
+  DMS_LOCK_ENABLED_V01 = 0x01, /**<  Enabled  */
   DMS_LOCK_STATE_ENUM_MAX_ENUM_VAL_V01 = 2147483647 /**< To force a 32 bit signed enum.  Do not change or use*/
 }dms_lock_state_enum_v01;
 /**
@@ -2451,9 +2517,9 @@ typedef struct {
 
   dms_lock_state_enum_v01 lock_state;
   /**<   Current state of the lock. Values: \n
-       - 0 -- Disabled \n
-       - 1 -- Enabled
-  */
+      - DMS_LOCK_DISABLED (0x00) --  Disabled \n 
+      - DMS_LOCK_ENABLED (0x01) --  Enabled 
+ */
 
   char lock_code[QMI_DMS_LOCK_CODE_LEN_V01];
   /**<   4-byte code set for the lock in ASCII format (digits 0 to 9 only). */
@@ -2547,13 +2613,8 @@ typedef struct {
   char __placeholder;
 }dms_read_user_data_req_msg_v01;
 
-
-
 //zhoupan add
-
-
 typedef struct {
-
   /* Mandatory */
   /*  Interruption  */
   uint32_t data_len;
@@ -2576,6 +2637,20 @@ typedef struct {
   /*  User Data */
   dms_send_sdcard_data_type_v01 pkt_data;
 }dms_send_sdcard_data_req_msg_v01;  /* Message */
+
+typedef struct {
+  uint32_t data_len;  /**< Must be set to # of elements in data */
+  uint32_t msg_id;
+  uint8_t data[QMI_DMS_SEND_SDCARD_DATA_MAX_V01];
+  /**<   User data from/to persistent storage (maximum 15*1024). */
+}dms_send_sdcard_data_type_v02;  /* Type */
+
+typedef struct {
+
+  /* Mandatory */
+  /*  User Data */
+  dms_send_sdcard_data_type_v02 pkt_data;
+}dms_send_sdcard_data_req_msg_v02;  /* Message */
 
 typedef struct {
 
@@ -2631,7 +2706,6 @@ typedef struct {
   /*  Result Code */
   qmi_response_type_v01 resp;
 }get_nv_item_resp_msg_v01;  /* Message */
-
 //zhoupan add end
 
 
@@ -2847,10 +2921,10 @@ typedef struct {
   */
 typedef enum {
   DMS_GSM_PERSO_FACILITY_ENUM_MIN_ENUM_VAL_V01 = -2147483647, /**< To force a 32 bit signed enum.  Do not change or use*/
-  DMS_PERSO_FACILITY_NETWORK_V01 = 0x00, /**<  Network personalization (PN)  */
-  DMS_PERSO_FACILITY_NETWORK_SUBSET_V01 = 0x01, /**<  Network subset personalization (PU)  */
-  DMS_PERSO_FACILITY_SERVICE_PROVIDER_V01 = 0x02, /**<  Service provider personalization (PP)  */
-  DMS_PERSO_FACILITY_CORPORATE_V01 = 0x03, /**<  Corporate personalization (PC)  */
+  DMS_PERSO_FACILITY_NETWORK_V01 = 0x00, /**<  Network personalization (PN) \n  */
+  DMS_PERSO_FACILITY_NETWORK_SUBSET_V01 = 0x01, /**<  Network subset personalization (PU) \n  */
+  DMS_PERSO_FACILITY_SERVICE_PROVIDER_V01 = 0x02, /**<  Service provider personalization (PP) \n  */
+  DMS_PERSO_FACILITY_CORPORATE_V01 = 0x03, /**<  Corporate personalization (PC)\n  */
   DMS_PERSO_FACILITY_UIM_V01 = 0x04, /**<  UIM personalization (PF)  */
   DMS_GSM_PERSO_FACILITY_ENUM_MAX_ENUM_VAL_V01 = 2147483647 /**< To force a 32 bit signed enum.  Do not change or use*/
 }dms_gsm_perso_facility_enum_v01;
@@ -2868,12 +2942,12 @@ typedef struct {
   /*  UIM Personalization Facility */
   dms_gsm_perso_facility_enum_v01 facility;
   /**<   MT or network facility (corresponding AT+CLCK value). Values: \n
-       - 0 -- Network personalization (PN) \n
-       - 1 -- Network subset personalization (PU) \n
-       - 2 -- Service provider personalization (PP) \n
-       - 3 -- Corporate personalization (PC) \n
-       - 4 -- UIM personalization (PF)
-  */
+      - DMS_PERSO_FACILITY_NETWORK (0x00) --  Network personalization (PN) \n 
+      - DMS_PERSO_FACILITY_NETWORK_SUBSET (0x01) --  Network subset personalization (PU) \n 
+      - DMS_PERSO_FACILITY_SERVICE_PROVIDER (0x02) --  Service provider personalization (PP) \n 
+      - DMS_PERSO_FACILITY_CORPORATE (0x03) --  Corporate personalization (PC)\n 
+      - DMS_PERSO_FACILITY_UIM (0x04) --  UIM personalization (PF) 
+ */
 }dms_uim_get_ck_status_req_msg_v01;  /* Message */
 /**
     @}
@@ -2934,7 +3008,7 @@ typedef struct {
   /*  Operation Blocking Facility */
   uint8_t operation_blocking_valid;  /**< Must be set to true if operation_blocking is being passed */
   uint8_t operation_blocking;
-  /**<   Presence of this TLV indicates that this facility is currently
+  /**<   Presence of this TLV indicates that this facility is 
        blocking normal operation of the device. This value can be
        returned only if the facility_state is not 0 (deactivated).
 
@@ -2952,12 +3026,12 @@ typedef struct {
 
   dms_gsm_perso_facility_enum_v01 facility;
   /**<   UIM Personalization facility (corresponding AT+CLCK value). Values: \n
-       - 0 -- Network personalization (PN) \n
-       - 1 -- Network subset personalization (PU) \n
-       - 2 -- Service provider personalization (PP) \n
-       - 3 -- Corporate personalization (PC) \n
-       - 4 -- UIM personalization (PF)
-  */
+      - DMS_PERSO_FACILITY_NETWORK (0x00) --  Network personalization (PN) \n 
+      - DMS_PERSO_FACILITY_NETWORK_SUBSET (0x01) --  Network subset personalization (PU) \n 
+      - DMS_PERSO_FACILITY_SERVICE_PROVIDER (0x02) --  Service provider personalization (PP) \n 
+      - DMS_PERSO_FACILITY_CORPORATE (0x03) --  Corporate personalization (PC)\n 
+      - DMS_PERSO_FACILITY_UIM (0x04) --  UIM personalization (PF) 
+ */
 
   dms_facility_state_enum_v01 facility_state;
   /**<   UIM facility state. Values: \n
@@ -3017,12 +3091,12 @@ typedef struct {
 
   dms_gsm_perso_facility_enum_v01 facility;
   /**<   UIM personalization facility (corresponding AT+CLCK value). Values:\n
-       - 0 -- Network personalization (PN) \n
-       - 1 -- Network subset personalization (PU) \n
-       - 2 -- Service provider personalization (PP) \n
-       - 3 -- Corporate personalization (PC) \n
-       - 4 -- UIM personalization (PF)
-  */
+      - DMS_PERSO_FACILITY_NETWORK (0x00) --  Network personalization (PN) \n 
+      - DMS_PERSO_FACILITY_NETWORK_SUBSET (0x01) --  Network subset personalization (PU) \n 
+      - DMS_PERSO_FACILITY_SERVICE_PROVIDER (0x02) --  Service provider personalization (PP) \n 
+      - DMS_PERSO_FACILITY_CORPORATE (0x03) --  Corporate personalization (PC)\n 
+      - DMS_PERSO_FACILITY_UIM (0x04) --  UIM personalization (PF) 
+ */
 
   char facility_unblock_ck[QMI_DMS_FACILITY_UNBLOCK_CK_MAX_V01 + 1];
   /**<   Facility control key string in ASCII text (maximum 8 bytes). */
@@ -3132,12 +3206,11 @@ typedef struct {
   /*  UIM State */
   dms_uim_state_enum_v01 uim_state;
   /**<   UIM state. Values: \n
-       - 0x00 -- UIM initialization completed \n
-       - 0x01 -- UIM is locked or the UIM failed \n
-       - 0x02 -- UIM is not present \n
-       - 0x03 -- Reserved \n
-       - 0xFF -- UIM state is currently unavailable 
-  */
+      - DMS_UIM_INITIALIZATION_COMPLETED (0x00) --  UIM initialization has completed \n 
+      - DMS_UIM_INITIALIZATION_FAILED (0x01) --  UIM has failed \n
+      - DMS_UIM_NOT_PRESENT (0x02) --  UIM is not present \n 
+      - DMS_UIM_STATE_UNAVAILABLE (-1) --  UIM state is unavailable 
+ */
 }dms_uim_get_state_resp_msg_v01;  /* Message */
 /**
     @}
@@ -3282,10 +3355,10 @@ typedef struct {
   uint8_t time_reference_type_valid;  /**< Must be set to true if time_reference_type is being passed */
   dms_time_ref_type_enum_v01 time_reference_type;
   /**<   Time reference used while setting the time. Values: \n
-       - 0x00000000 -- User time \n
-       - 0x00000001 to 0xFFFFFFFF -- Reserved for
-         future extension
-  */
+      - DMS_TIME_REF_TYPE_USER (0x00000000) --  User time  \n
+ - 0x00000001 to 0xFFFFFFFF -- Reserved for
+ future extension
+ */
 }dms_set_time_req_msg_v01;  /* Message */
 /**
     @}
@@ -3526,7 +3599,7 @@ typedef struct {
 /** @addtogroup dms_qmi_messages
     @{
   */
-/** Request Message; Queries the currently active PRL information of the device. */
+/** Request Message; Queries the active PRL information of the device. */
 typedef struct {
   /* This element is a placeholder to prevent the declaration of
      an empty struct.  DO NOT USE THIS FIELD UNDER ANY CIRCUMSTANCE */
@@ -3541,7 +3614,7 @@ typedef struct {
 /** @addtogroup dms_qmi_messages
     @{
   */
-/** Response Message; Queries the currently active PRL information of the device. */
+/** Response Message; Queries the active PRL information of the device. */
 typedef struct {
 
   /* Mandatory */
@@ -3574,20 +3647,6 @@ typedef struct {
       - DMS_PRL_SOURCE_INFO_CARD (3) --  PRL source is the card 
  */
 }dms_get_current_prl_info_resp_msg_v01;  /* Message */
-/**
-    @}
-  */
-
-/** @addtogroup dms_qmi_enums
-    @{
-  */
-typedef enum {
-  DMS_BIND_SUBSCRIPTION_ENUM_MIN_ENUM_VAL_V01 = -2147483647, /**< To force a 32 bit signed enum.  Do not change or use*/
-  DMS_PRIMARY_SUBS_V01 = 0x0001, /**<  Primary \n  */
-  DMS_SECONDARY_SUBS_V01 = 0x0002, /**<  Secondary \n  */
-  DMS_TERTIARY_SUBS_V01 = 0x0003, /**<  Tertiary   */
-  DMS_BIND_SUBSCRIPTION_ENUM_MAX_ENUM_VAL_V01 = 2147483647 /**< To force a 32 bit signed enum.  Do not change or use*/
-}dms_bind_subscription_enum_v01;
 /**
     @}
   */
@@ -3726,7 +3785,7 @@ typedef struct {
   uint8_t cdma_lock_mode_status_valid;  /**< Must be set to true if cdma_lock_mode_status is being passed */
   dms_cdma_lock_mode_state_enum_v01 cdma_lock_mode_status;
   /**<   CDMA Lock mode status. Values: \n
-      - DMS_CDMA_LOCK_MODE_OFF (0) --  Phone is not CDMA locked 
+      - DMS_CDMA_LOCK_MODE_OFF (0) --  Phone is not CDMA locked \n 
       - DMS_CDMA_LOCK_MODE_ON (1) --  Phone is CDMA locked  
  */
 }dms_get_cdma_lock_mode_resp_msg_v01;  /* Message */
@@ -3815,7 +3874,7 @@ typedef struct {
   /*  Active TDS CDMA Configuration */
   uint8_t active_tds_config_valid;  /**< Must be set to true if active_tds_config is being passed */
   dms_test_config_tds_enum_v01 active_tds_config;
-  /**<   Configuration parameters currently used for TDS CDMA. Values: \n
+  /**<   Configuration parameters used for TDS CDMA. Values: \n
       - DMS_TEST_CONFIG_TDS_PRODUCTION (0) --  Use the configuration applicable in production 
                                        (in the field) \n 
       - DMS_TEST_CONFIG_TDS_LAB (1) --  Use the configuration applicable in the 
@@ -3929,6 +3988,7 @@ typedef enum {
   DMS_DEVICE_MAC_ENUM_MIN_ENUM_VAL_V01 = -2147483647, /**< To force a 32 bit signed enum.  Do not change or use*/
   DMS_DEVICE_MAC_WLAN_V01 = 0, /**<  WLAN device \n  */
   DMS_DEVICE_MAC_BT_V01 = 1, /**<  Bluetooth\reg device  */
+  DMS_DEVICE_MAC_LAN_V01 = 2,/**< lan device */
   DMS_DEVICE_MAC_ENUM_MAX_ENUM_VAL_V01 = 2147483647 /**< To force a 32 bit signed enum.  Do not change or use*/
 }dms_device_mac_enum_v01;
 /**
@@ -4041,11 +4101,11 @@ typedef struct {
   */
 typedef enum {
   DMS_TX_MODE_LEVEL_ENUM_MIN_ENUM_VAL_V01 = -2147483647, /**< To force a 32 bit signed enum.  Do not change or use*/
-  DMS_TX_MODE_LEVEL_ONE_V01 = 0, /**<  Level one */
-  DMS_TX_MODE_LEVEL_TWO_V01 = 1, /**<  Level two */
-  DMS_TX_MODE_LEVEL_THREE_V01 = 2, /**<  Level three  */
-  DMS_TX_MODE_LEVEL_FOUR_V01 = 3, /**<  Level four  */
-  DMS_TX_MODE_LEVEL_FIVE_V01 = 4, /**<  Level five  */
+  DMS_TX_MODE_LEVEL_ONE_V01 = 0, /**<  Level 1 */
+  DMS_TX_MODE_LEVEL_TWO_V01 = 1, /**<  Level 2 */
+  DMS_TX_MODE_LEVEL_THREE_V01 = 2, /**<  Level 3  */
+  DMS_TX_MODE_LEVEL_FOUR_V01 = 3, /**<  Level 4  */
+  DMS_TX_MODE_LEVEL_FIVE_V01 = 4, /**<  Level 5  */
   DMS_TX_MODE_LEVEL_ENUM_MAX_ENUM_VAL_V01 = 2147483647 /**< To force a 32 bit signed enum.  Do not change or use*/
 }dms_tx_mode_level_enum_v01;
 /**
@@ -4060,11 +4120,11 @@ typedef struct {
   dms_tx_mode_level_enum_v01 tx_mode_level;
   /**<   Power levels used by the modem in
  Tx (Transmitter) mode. Values: 
-      - DMS_TX_MODE_LEVEL_ONE (0) --  Level one
-      - DMS_TX_MODE_LEVEL_TWO (1) --  Level two
-      - DMS_TX_MODE_LEVEL_THREE (2) --  Level three 
-      - DMS_TX_MODE_LEVEL_FOUR (3) --  Level four 
-      - DMS_TX_MODE_LEVEL_FIVE (4) --  Level five  */
+      - DMS_TX_MODE_LEVEL_ONE (0) --  Level 1
+      - DMS_TX_MODE_LEVEL_TWO (1) --  Level 2
+      - DMS_TX_MODE_LEVEL_THREE (2) --  Level 3 
+      - DMS_TX_MODE_LEVEL_FOUR (3) --  Level 4 
+      - DMS_TX_MODE_LEVEL_FIVE (4) --  Level 5  */
 
   uint32_t tx_mode_duration;
   /**<   Duration that the modem was active on Tx mode 
@@ -4129,7 +4189,7 @@ typedef struct {
 /** @addtogroup dms_qmi_messages
     @{
   */
-/** Request Message; Query PSM (Power Save Mode) configuration parameters */
+/** Request Message; Queries the Power Save Mode (PSM) configuration parameters. */
 typedef struct {
   /* This element is a placeholder to prevent the declaration of
      an empty struct.  DO NOT USE THIS FIELD UNDER ANY CIRCUMSTANCE */
@@ -4144,7 +4204,7 @@ typedef struct {
 /** @addtogroup dms_qmi_messages
     @{
   */
-/** Response Message; Query PSM (Power Save Mode) configuration parameters */
+/** Response Message; Queries the Power Save Mode (PSM) configuration parameters. */
 typedef struct {
 
   /* Mandatory */
@@ -4152,7 +4212,7 @@ typedef struct {
   qmi_response_type_v01 resp;
 
   /* Optional */
-  /*  Power Save Mode enable state  */
+  /*  Power Save Mode Enable State  */
   uint8_t psm_enabled_valid;  /**< Must be set to true if psm_enabled is being passed */
   uint8_t psm_enabled;
   /**<   Values: \n
@@ -4161,24 +4221,24 @@ typedef struct {
   */
 
   /* Optional */
-  /*  Duration threshold */
+  /*  Duration Threshold */
   uint8_t duration_threshold_valid;  /**< Must be set to true if duration_threshold is being passed */
   uint32_t duration_threshold;
-  /**<   Minimum duration worth to enter Power Save Mode (in seconds)
+  /**<   Minimum duration for the device to benefit by entering PSM (in seconds).
   */
 
   /* Optional */
-  /*  Duration due to OOS */
+  /*  Duration Due to OOS */
   uint8_t duration_due_to_oos_valid;  /**< Must be set to true if duration_due_to_oos is being passed */
   uint32_t duration_due_to_oos;
-  /**<   Power Save Mode duration due to outage (in seconds) 
+  /**<   Power Save Mode duration due to an outage (in seconds). 
   */
 
   /* Optional */
-  /*  Randomization window */
+  /*  Randomization Window */
   uint8_t randomization_window_valid;  /**< Must be set to true if randomization_window is being passed */
   uint32_t randomization_window;
-  /**<   Power Save Mode wakeup randomization window (in seconds) 
+  /**<   Power Save Mode wakeup randomization window (in seconds). 
   */
 
   /* Optional */
@@ -4194,6 +4254,15 @@ typedef struct {
   uint32_t periodic_update_timer;
   /**<   Power Save Mode Periodic update timer value (in seconds) 
   */
+
+  /* Optional */
+  /*  Early Wakeup Time */
+  uint8_t early_wakeup_time_valid;  /**< Must be set to true if early_wakeup_time is being passed */
+  uint32_t early_wakeup_time;
+  /**<   Power Save Mode Early Wakeup Time (in seconds) indicates 
+       how early device should exit PSM to offset for boot-up and 
+       acquisition delay.
+  */
 }dms_psm_get_cfg_params_resp_msg_v01;  /* Message */
 /**
     @}
@@ -4202,14 +4271,14 @@ typedef struct {
 /** @addtogroup dms_qmi_messages
     @{
   */
-/** Request Message; Request to enter PSM (Power Save Mode) */
+/** Request Message; Requests to enter Power Save Mode (PSM). */
 typedef struct {
 
   /* Optional */
   /*  Duration in PSM */
   uint8_t duration_in_psm_valid;  /**< Must be set to true if duration_in_psm is being passed */
   uint32_t duration_in_psm;
-  /**<   Duration to stay in PSM mode (in seconds)
+  /**<   Duration to stay in PSM (in seconds).
   */
 }dms_psm_enter_req_msg_v01;  /* Message */
 /**
@@ -4219,7 +4288,7 @@ typedef struct {
 /** @addtogroup dms_qmi_messages
     @{
   */
-/** Response Message; Request to enter PSM (Power Save Mode) */
+/** Response Message; Requests to enter Power Save Mode (PSM). */
 typedef struct {
 
   /* Mandatory */
@@ -4235,10 +4304,10 @@ typedef struct {
   */
 typedef enum {
   DMS_PSM_STATUS_ENUM_MIN_ENUM_VAL_V01 = -2147483647, /**< To force a 32 bit signed enum.  Do not change or use*/
-  DMS_PSM_STATUS_COMPLETED_V01 = 0, /**<  Entering into PSM  is done  */
-  DMS_PSM_STATUS_REJECTED_V01 = 1, /**<  Entering PSM  is rejected  */
-  DMS_PSM_STATUS_READY_V01 = 2, /**<  MODEM is ready for entering into PSM   */
-  DMS_PSM_STATUS_OOS_V01 = 3, /**<  UE not able to acquire service even after few full scans  */
+  DMS_PSM_STATUS_COMPLETED_V01 = 0, /**<  Entering into PSM is complete.  */
+  DMS_PSM_STATUS_REJECTED_V01 = 1, /**<  Entering PSM is rejected.  */
+  DMS_PSM_STATUS_READY_V01 = 2, /**<  Modem is ready to enter PSM.   */
+  DMS_PSM_STATUS_OOS_V01 = 3, /**<  UE is unable to acquire service, even after a few full scans.  */
   DMS_PSM_STATUS_LIMITED_SERVICE_V01 = 4, /**<  UE acquired limited service but not full service  */
   DMS_PSM_STATUS_AUTO_READY_V01 = 5, /**<  Modem is autonomously ready to enter into PSM  */
   DMS_PSM_STATUS_ENUM_MAX_ENUM_VAL_V01 = 2147483647 /**< To force a 32 bit signed enum.  Do not change or use*/
@@ -4252,10 +4321,13 @@ typedef enum {
   */
 typedef enum {
   DMS_PSM_REJECT_REASON_ENUM_MIN_ENUM_VAL_V01 = -2147483647, /**< To force a 32 bit signed enum.  Do not change or use*/
-  DMS_PSM_REJECT_REASON_NO_ERROR_V01 = 0, /**<  No error  */
-  DMS_PSM_REJECT_REASON_NOT_ENABLED_V01 = 1, /**<  PSM is not enabled  */
-  DMS_PSM_REJECT_REASON_MODEM_NOT_READY_V01 = 2, /**<  Modem is not in ready state, ex: MT call is in progress  */
-  DMS_PSM_REJECT_REASON_DURATION_TOO_SHORT_V01 = 3, /**<  Duration set by control point is less than PSM mode threshold  */
+  DMS_PSM_REJECT_REASON_NO_ERROR_V01 = 0, /**<  No error.  */
+  DMS_PSM_REJECT_REASON_NOT_ENABLED_V01 = 1, /**<  PSM is not enabled.  */
+  DMS_PSM_REJECT_REASON_MODEM_NOT_READY_V01 = 2, /**<  Modem is not in a ready state; for example, an MT call is in progress.  */
+  DMS_PSM_REJECT_REASON_DURATION_TOO_SHORT_V01 = 3, /**<  Duration set by the control point is less than the PSM threshold.  */
+  DMS_PSM_REJECT_REASON_PSM_DURATION_CHANGED_V01 = 4, /**<  Duration set by control point is greater than the PSM timer duration 
+       on modem. Control point can retry with a shorter duration.
+   */
   DMS_PSM_REJECT_REASON_ENUM_MAX_ENUM_VAL_V01 = 2147483647 /**< To force a 32 bit signed enum.  Do not change or use*/
 }dms_psm_reject_reason_enum_v01;
 /**
@@ -4265,30 +4337,33 @@ typedef enum {
 /** @addtogroup dms_qmi_messages
     @{
   */
-/** Indication Message; Indicates PSM (Power Save Mode) status */
+/** Indication Message; Indicates PSM status. */
 typedef struct {
 
   /* Mandatory */
-  /*  PSM status */
+  /*  PSM Status */
   dms_psm_status_enum_v01 psm_status;
   /**<   PSM status. Values: \n
-      - DMS_PSM_STATUS_COMPLETED (0) --  Entering into PSM  is done 
-      - DMS_PSM_STATUS_REJECTED (1) --  Entering PSM  is rejected 
-      - DMS_PSM_STATUS_READY (2) --  MODEM is ready for entering into PSM  
-      - DMS_PSM_STATUS_OOS (3) --  UE not able to acquire service even after few full scans 
+      - DMS_PSM_STATUS_COMPLETED (0) --  Entering into PSM is complete. 
+      - DMS_PSM_STATUS_REJECTED (1) --  Entering PSM is rejected. 
+      - DMS_PSM_STATUS_READY (2) --  Modem is ready to enter PSM.  
+      - DMS_PSM_STATUS_OOS (3) --  UE is unable to acquire service, even after a few full scans. 
       - DMS_PSM_STATUS_LIMITED_SERVICE (4) --  UE acquired limited service but not full service 
       - DMS_PSM_STATUS_AUTO_READY (5) --  Modem is autonomously ready to enter into PSM 
  */
 
   /* Optional */
-  /*  PSM reject reason */
+  /*  PSM Reject Reason */
   uint8_t reject_reason_valid;  /**< Must be set to true if reject_reason is being passed */
   dms_psm_reject_reason_enum_v01 reject_reason;
   /**<   PSM reject status. Values: \n
-      - DMS_PSM_REJECT_REASON_NO_ERROR (0) --  No error 
-      - DMS_PSM_REJECT_REASON_NOT_ENABLED (1) --  PSM is not enabled 
-      - DMS_PSM_REJECT_REASON_MODEM_NOT_READY (2) --  Modem is not in ready state, ex: MT call is in progress 
-      - DMS_PSM_REJECT_REASON_DURATION_TOO_SHORT (3) --  Duration set by control point is less than PSM mode threshold 
+      - DMS_PSM_REJECT_REASON_NO_ERROR (0) --  No error. 
+      - DMS_PSM_REJECT_REASON_NOT_ENABLED (1) --  PSM is not enabled. 
+      - DMS_PSM_REJECT_REASON_MODEM_NOT_READY (2) --  Modem is not in a ready state; for example, an MT call is in progress. 
+      - DMS_PSM_REJECT_REASON_DURATION_TOO_SHORT (3) --  Duration set by the control point is less than the PSM threshold. 
+      - DMS_PSM_REJECT_REASON_PSM_DURATION_CHANGED (4) --  Duration set by control point is greater than the PSM timer duration 
+       on modem. Control point can retry with a shorter duration.
+  
  */
 
   /* Optional */
@@ -4305,7 +4380,7 @@ typedef struct {
 /** @addtogroup dms_qmi_messages
     @{
   */
-/** Request Message; Queries for AP's UI status information at modem. */
+/** Request Message; Queries for the UI status information of the application processor at the modem. */
 typedef struct {
   /* This element is a placeholder to prevent the declaration of
      an empty struct.  DO NOT USE THIS FIELD UNDER ANY CIRCUMSTANCE */
@@ -4320,7 +4395,7 @@ typedef struct {
 /** @addtogroup dms_qmi_messages
     @{
   */
-/** Response Message; Queries for AP's UI status information at modem. */
+/** Response Message; Queries for the UI status information of the application processor at the modem. */
 typedef struct {
 
   /* Mandatory */
@@ -4331,10 +4406,10 @@ typedef struct {
   /*  UI Status */
   uint8_t ui_ready_status_valid;  /**< Must be set to true if ui_ready_status is being passed */
   uint8_t ui_ready_status;
-  /**<   The value of AP's UI status at modem\n
+  /**<   UI status of the application processor at the modem. \n
         Values: \n
-          - 0 -- UI is NOT READY \n
-          - 1 -- UI is READY
+          - 0 -- UI is not ready \n
+          - 1 -- UI is ready
     */
 }dms_get_ui_status_info_resp_msg_v01;  /* Message */
 /**
@@ -4344,17 +4419,17 @@ typedef struct {
 /** @addtogroup dms_qmi_messages
     @{
   */
-/** Request Message; Set AP's UI status information at modem. */
+/** Request Message; Sets the UI status information of the application processor at the modem. */
 typedef struct {
 
   /* Optional */
   /*  UI Status */
   uint8_t ui_ready_status_valid;  /**< Must be set to true if ui_ready_status is being passed */
   uint8_t ui_ready_status;
-  /**<   The value of AP's UI status at modem\n
+  /**<   UI status of the application processor at the modem. \n
         Values: \n
-          - 0 -- UI is NOT READY \n
-          - 1 -- UI is READY
+          - 0 -- UI is not ready \n
+          - 1 -- UI is ready
     */
 }dms_set_ui_status_info_req_msg_v01;  /* Message */
 /**
@@ -4364,7 +4439,7 @@ typedef struct {
 /** @addtogroup dms_qmi_messages
     @{
   */
-/** Response Message; Set AP's UI status information at modem. */
+/** Response Message; Sets the UI status information of the application processor at the modem. */
 typedef struct {
 
   /* Mandatory */
@@ -4434,7 +4509,7 @@ typedef struct {
   */
 
   /* Optional */
-  /*  Update timer */
+  /*  Periodic Update timer */
   uint8_t periodic_update_timer_valid;  /**< Must be set to true if periodic_update_timer is being passed */
   uint32_t periodic_update_timer;
   /**<   PSM Periodic update timer value (in seconds) 
@@ -4494,9 +4569,27 @@ typedef struct{
 }dms_set_cmd_data_mode_switch_req_msg_v01;
 
 typedef struct{
-	qmi_response_type_v01 resp;
+  qmi_response_type_v01 resp;
 }dms_set_cmd_data_mode_switch_resp_msg_v01;
 //zhusilin add end
+
+/**
+    @}
+  */
+
+/** @addtogroup dms_qmi_messages
+    @{
+  */
+/** Indication Message; Indicates the IMS capability of the device */
+typedef struct {
+
+  /* Mandatory */
+  /*  Device's IMS Capability */
+  uint32_t ims_capability_len;  /**< Must be set to # of elements in ims_capability */
+  dms_ims_capability_type_v01 ims_capability[QMI_DMS_MAX_SUBSCRIPTION_LIST_LEN_V01];
+  /**<   \n Device's IMS capability.
+   */
+}dms_ims_capability_ind_msg_v01;  /* Message */
 /**
     @}
   */
@@ -4533,6 +4626,7 @@ typedef struct{
 //#define REMOVE_QMI_DMS_GET_TIME_V01 
 //#define REMOVE_QMI_DMS_GET_UI_STATUS_INFO_V01 
 //#define REMOVE_QMI_DMS_GET_USER_LOCK_STATE_V01 
+//#define REMOVE_QMI_DMS_IMS_CAPABILITY_IND_V01 
 //#define REMOVE_QMI_DMS_INDICATION_REGISTER_V01 
 //#define REMOVE_QMI_DMS_MODEM_ACTIVITY_INFO_IND_V01 
 //#define REMOVE_QMI_DMS_OEM_CHINA_OPERATOR_V01 
@@ -4709,15 +4803,19 @@ typedef struct{
 #define QMI_DMS_PSM_SET_CFG_PARAMS_REQ_V01 0x0066
 #define QMI_DMS_PSM_SET_CFG_PARAMS_RESP_V01 0x0066
 #define QMI_DMS_PSM_CFG_PARAMS_CHANGE_IND_V01 0x0067
+#define QMI_DMS_IMS_CAPABILITY_IND_V01 0x0068
 
-#define QMI_DMS_SEDN_SDCARD_DATA_REQ_V01 0x0068 //zhoupan add
-#define QMI_DMS_SEDN_SDCARD_DATA_RESP_V01 0x0068 //zhoupan add 
-#define QMI_DMS_SEDN_NV_DATA_REQ_V01 0x0069 //zhoupan add
-#define QMI_DMS_SEDN_NV_DATA_RESP_V01 0x0069 //zhoupan add 
-#define QMI_DMS_SEDN_SDCARD_FTP_DATA_REQ_V01 0x006a //zhoupan add
-#define QMI_DMS_SEDN_SDCARD_FTP_DATA_RESP_V01 0x006a //zhoupan add
-#define QMI_DMS_SET_USB_CMD_DATA_MODE_SWITCH_REQ_V01 0x6b //zhusilin add
-#define QMI_DMS_SET_USB_CMD_DATA_MODE_SWITCH_RESP_V01 0x6b //zhusilin add
+#define QMI_DMS_SEDN_SDCARD_DATA_REQ_V01 0x0069 //zhoupan add
+#define QMI_DMS_SEDN_SDCARD_DATA_RESP_V01 0x0069 //zhoupan add 
+#define QMI_DMS_SEDN_NV_DATA_REQ_V01 0x006a //zhoupan add
+#define QMI_DMS_SEDN_NV_DATA_RESP_V01 0x006a //zhoupan add 
+#define QMI_DMS_SEDN_SDCARD_FTP_DATA_REQ_V01 0x6b //zhoupan add
+#define QMI_DMS_SEDN_SDCARD_FTP_DATA_RESP_V01 0x6b //zhoupan add
+#define QMI_DMS_SET_USB_CMD_DATA_MODE_SWITCH_REQ_V01 0x6c //zhusilin add
+#define QMI_DMS_SET_USB_CMD_DATA_MODE_SWITCH_RESP_V01 0x6c //zhusilin add
+#define QMI_DMS_SDCARD_RSP_MSG_ANALY_IND_REQ_V01          0x6d //xuesong.zhu add
+#define QMI_DMS_SDCARD_RSP_MSG_ANALY_IND_RESP_V01        0x6d //xuesong.zhu add
+#define QMI_DMS_SDCARD_REQ_MSG_IND_V01  0x6e  //xuesong.zhu add
 
 /**
     @}
