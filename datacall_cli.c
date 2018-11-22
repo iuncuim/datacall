@@ -72,7 +72,7 @@ int main( int argc, char *argv[] )
 	 case 'p':
 		 temp = getPinState();
 		 if(!temp){
-			 printf("UIM uninitialized\n");
+			 printf("\"UIM uninitialized\"\n");
 		 }else{
 			 printf("{\n");
 			 printf(" \"pin1_status\": ");

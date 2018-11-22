@@ -1,6 +1,6 @@
 
 
-CC =C:\\Sourcery_CodeBench_Lite_for_ARM_GNU_Linux\\bin\\arm-none-linux-gnueabi-gcc
+CC = gcc
 CFLAGS = -c -O2
 
 LD_FLAGS = -ldsi_netctrl \
