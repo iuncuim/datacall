@@ -298,7 +298,50 @@ int qmiuimdemo_qmi_init(void)
   return 0;
 }
 
+void qmiuimdemo_qmi_release(void)
+{
+  qmi_client_release(qmiuimdemo_uim_svc_client);
+}
 
+int getSimType(){
+	uim_get_card_status_resp_msg_v01	qmi_response;
+	qmi_client_error_type				qmi_err_code = 0;
+	unsigned int						i;
+	unsigned int						j;
+
+	qmiuimdemo_qmi_init();
+	memset(&qmi_response, 0,	sizeof(uim_get_card_status_resp_msg_v01));
+	qmi_err_code = qmi_client_send_msg_sync(qmiuimdemo_uim_svc_client,
+						QMI_UIM_GET_CARD_STATUS_REQ_V01,
+						NULL,
+						0,
+						&qmi_response,
+						sizeof(qmi_response),
+						10000);
+
+	if (qmi_err_code != QMI_NO_ERR){
+		LOG("qmi read card status err=%d\n",qmi_err_code);
+		return -1;
+	}
+	if(!qmi_response.card_status_valid || qmi_response.resp.result != QMI_RESULT_SUCCESS_V01){
+		LOG("card_status is not valid !\n");
+    return -1;
+	}
+	for(i=0; i < QMI_UIM_CARDS_MAX_V01 && i < qmi_response.card_status.card_info_len; i++){
+		if (qmi_response.card_status.card_info[i].card_state ==	UIM_CARD_STATE_PRESENT_V01) {
+			for (j = 0 ; j < QMI_UIM_APPS_MAX_V01 ; j++) {
+        if(qmi_response.card_status.card_info[i].app_info[j].app_type != 0){
+				  #ifdef DEBUG
+          LOG("Type application=%d\n",qmi_response.card_status.card_info[i].app_info[j].app_type);
+          #endif //DEBUG
+          return qmi_response.card_status.card_info[i].app_info[j].app_type;
+          break;
+        }
+      }
+    }
+  }
+	qmiuimdemo_qmi_release();
+}
 
 
 char * qmiuimdemo_get_imsi(void )
@@ -308,9 +351,15 @@ char * qmiuimdemo_get_imsi(void )
   qmi_client_error_type rc;
   int imsi_len = 0;
   
-  uint8_t gw_path[] = {0x3F, 0x00, 0x7F, 0xFF, 0x00}; //{0x3F, 0x00, 0x7F, 0x20, 0x00}; //{0x3F, 0x00, 0x7F, 0xFF, 0x00};
+  uint8_t *gw_path;
+  uint8_t gw_path1[] = {0x3F, 0x00, 0x7F, 0x20, 0x00}; // SIM type
+  uint8_t gw_path2[] = {0x3F, 0x00, 0x7F, 0xFF, 0x00}; // USIM type
   uint8_t cdma_path[] = {0x3F, 0x00, 0x7F, 0x25, 0x00};
-    
+  if (getSimType() == 1)
+    gw_path = gw_path1;
+    else if (getSimType() == 2)
+      gw_path = gw_path2;
+  
   memset(&read_params, 0, sizeof(uim_read_transparent_req_msg_v01)); 
   memset(&resp, 0, sizeof(uim_read_transparent_resp_msg_v01)); 
 
@@ -402,13 +451,6 @@ char * qmiuimdemo_get_iccid(void )
                                     resp.read_result.content_len,
                                     &iccid_len);
 }
-
-void qmiuimdemo_qmi_release(void)
-{
-  qmi_client_release(qmiuimdemo_uim_svc_client);
-}
-
-
 
 int get_IMSI(int argc , char ** argv)
 {

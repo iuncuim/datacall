@@ -65,7 +65,7 @@ void qminasdemo_get_SignalStrength( void )
   nas_get_signal_strength_req_msg_v01 nas_req_msg;
   nas_get_signal_strength_resp_msg_v01 resp;
   qmi_client_error_type rc;
-  
+  char *radio_type = NULL;
 
   memset(&nas_req_msg, 0, sizeof(nas_get_signal_strength_req_msg_v01));
   memset(&resp, 0, sizeof(nas_get_signal_strength_resp_msg_v01)); 
@@ -96,12 +96,27 @@ void qminasdemo_get_SignalStrength( void )
   {
     //LOG("ok here\n");
   }
+
+  switch(resp.signal_strength.radio_if){
+    case 4:
+      radio_type="gsm";
+      break;
+    case 5:
+      radio_type="umts";
+      break;
+    case 8:
+      radio_type="lte";
+      break;
+    default:
+      radio_type="err";
+  }
+
   printf("{\n");
   printf("        \"type\": \"err\",\n");
   printf("        \"rssi\": \"err\",\n");
   printf("        \"ecio\": \"err\",\n");
   printf("        \"io\": \"err\",\n");
-  printf("        \"type\": \"0x%x\",\n",resp.signal_strength.radio_if); // 0x08 - LTE, 0x05 - UMTS 
+  printf("        \"type\": \"%s\",\n",radio_type); // 0x08 - LTE, 0x05 - UMTS 
   printf("        \"rssi\": \"%d\",\n",resp.signal_strength.sig_strength);
   printf("        \"rsrq\": \"err\",\n");
   printf("        \"rsrp\": \"err\",\n");
