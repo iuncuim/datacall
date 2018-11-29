@@ -337,9 +337,10 @@ char * qmiuimdemo_get_imsi(void )
   }
   else if (QMI_NO_ERR != resp.resp.result)
   {
+    #ifdef DEBUG
     LOG("qmi read transparent: failed response err=%d\n",
                   resp.resp.error);
-
+    #endif //DEBUG
   }
   else
   {
@@ -387,9 +388,10 @@ char * qmiuimdemo_get_iccid(void )
   }
   else if (QMI_NO_ERR != resp.resp.result)
   {
+    #ifdef DEBUG
     LOG("qmi read transparent: failed response err=%d\n",
                   resp.resp.error);
-
+    #endif //DEBUG
   }
   else
   {
@@ -415,9 +417,12 @@ int get_IMSI(int argc , char ** argv)
   qmiuimdemo_qmi_init();
 
   imsi = qmiuimdemo_get_imsi();
-  printf("\"%s\"\n", imsi);
   if(imsi != NULL)
+  {
+    printf("\"%s\"\n", imsi);  
     free(imsi);
+  } else
+    printf("\"err\"\n"); 
    
   qmiuimdemo_qmi_release();
 
@@ -442,8 +447,8 @@ int get_ICCID()
       }
     }
     printf("\"%s\"\n", iccid);
-  }
-
+  } else
+    printf("\"err\"\n"); 
   
    if(iccid != NULL)
     free(iccid);
