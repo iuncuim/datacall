@@ -1,6 +1,6 @@
 
 
-CC = gcc
+CC = ../arm-2014.05/bin/arm-none-linux-gnueabi-gcc
 CFLAGS = -c -O2
 
 LD_FLAGS = -ldsi_netctrl \
@@ -43,7 +43,7 @@ OBJ_CMD = -o
 
 LD_CMD = -o
 
-TEST_OBJS = $(TARGET_OBJ_DIR)/datacall.o \
+TEST_OBJS = $(TARGET_OBJ_DIR)/datacall.o $(TARGET_OBJ_DIR1)/qminasdemo.o\
 
 
 TEST_OBJS1 = $(TARGET_OBJ_DIR1)/datacall_cli.o $(TARGET_OBJ_DIR1)/qminasdemo.o $(TARGET_OBJ_DIR1)/qmiuimdemo.o $(TARGET_OBJ_DIR1)/qmiwdsdemo.o $(TARGET_OBJ_DIR1)/qmidmsdemo.o \

@@ -8,6 +8,7 @@
 
 #define LOG printf
 
+int setModePref(int mode);
 int get_RSSI();
 static qmi_idl_service_object_type qminasdemo_uim_svc_obj;
 static qmi_client_type             qminasdemo_uim_svc_client;
@@ -126,9 +127,48 @@ void qminasdemo_get_SignalStrength( void )
   // printf("signal_stregth-sig_strength %d, radio if 0x%x\n", resp.signal_strength.sig_strength, resp.signal_strength.radio_if);
 }
 
+void qminasdemo_set_mode_pref(int mode)
+{
+  nas_set_system_selection_preference_req_msg_v01  nas_req_msg;
+  nas_set_system_selection_preference_resp_msg_v01 resp;
+  qmi_client_error_type rc;
+  char *radio_type = NULL;
+
+  memset(&nas_req_msg, 0, sizeof(nas_set_system_selection_preference_req_msg_v01));
+  memset(&resp, 0, sizeof(nas_set_system_selection_preference_resp_msg_v01)); 
+
+  nas_req_msg.mode_pref_valid =  1;
+  nas_req_msg.mode_pref = mode;
+
+
+  rc = qmi_client_send_msg_sync(qminasdemo_uim_svc_client,
+                            QMI_NAS_SET_SYSTEM_SELECTION_PREFERENCE_REQ_MSG_V01, 
+                            &nas_req_msg, 
+                            sizeof(nas_req_msg), 
+                            &resp, 
+                            sizeof(nas_set_system_selection_preference_resp_msg_v01),
+                            10000);
+#ifdef LOG_ENABLE
+  if (QMI_NO_ERR != rc)
+  {
+    LOG("qmi set mode network err=%d\n", rc);
+  }else{
+    LOG("qmi set mode network ok\n", rc);
+  }
+#endif
+}
+
 void qminasdemo_qmi_release(void)
 {
   qmi_client_release(qminasdemo_uim_svc_client);
+}
+
+int setModePref(int mode){
+  qminasdemo_qmi_init();
+
+  qminasdemo_set_mode_pref(mode);
+ 
+  qminasdemo_qmi_release();
 }
 
 int get_RSSI()

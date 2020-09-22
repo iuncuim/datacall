@@ -14,5 +14,6 @@ int getPinState();
 int VerifyPIN(char *pin);
 int GetStatusConnection();
 int GetIMEI();
+int setModePref(int mode);
 
 #endif /* INCLUDE_QMI_DEMO_QMIUIMDEMO_H_ */

@@ -17,8 +17,7 @@
 #include <getopt.h>
 
 #include "dsi_netctrl.h"
-
-
+#include "qmiuimdemo.h"
 
 //#define LOG_ENABLE
 
@@ -84,6 +83,7 @@ typedef struct{
 	char 			*pUsername;		//APN user name
 	char 			*pPsw;			//APN password
 	dsi_auth_pref_t auth;			//Auth pref
+	int mode; //UMTS related data bearer technologies
 }t_arg;
 
 t_arg setting;
@@ -93,6 +93,7 @@ static const struct option longOpts[] = {
 		{"apn", required_argument, NULL,'a'},
 		{"user", required_argument, NULL,'u'},
 		{"psw", required_argument, NULL,'p'},
+		{"mode", required_argument, NULL,'m'},
 		{"auth", required_argument, NULL,0},
 		{"help", no_argument, NULL,'h'},
 		{ NULL, no_argument, NULL, 0 }
@@ -319,6 +320,8 @@ void display_usage( void )
     		"  --apn <APN>, -a <APN>:             Set APN\n"
     		"  --user <username>, -u <username>:  Set APN user name (if any)\n"
     		"  --psw <password>, -p <password>:   Set APN password (if any)\n"
+    		"  --mode <mode>, -m <mode>:          Set network technology type.\n"
+    		"                                     Available modes: all, lte, umts, gsm\n"
     		"  --auth <type>:                     Set type authorization (none, pap, chap, both)\n"
     		);
     exit( EXIT_FAILURE );
@@ -337,6 +340,7 @@ int main(int argc, char * argv[])
   setting.pAPN = NULL;
   setting.pUsername = NULL;
   setting.pPsw = NULL;
+  setting.mode = NULL;
   setting.auth = DSI_AUTH_PREF_PAP_CHAP_NOT_ALLOWED;
 
   opt = getopt_long( argc, argv, optString, longOpts, &longIndex );
@@ -368,6 +372,54 @@ int main(int argc, char * argv[])
 	  case '?':
 		  display_usage();
 		  break;
+  /*
+  char *mode_pref[NUM_MODE_PREF] = {
+    "CDMA -----------------------------> 1",
+    "HRPD -----------------------------> 2",
+    "CDMA,HRPD ------------------------> 3",
+    "GSM ------------------------------> 4",
+    "UMTS -----------------------------> 8",
+    "LTE ------------------------------> 10",
+    "GSM,UMTS -------------------------> 12",
+    "CDMA,HRPD,LTE --------------------> 13",
+    "GSM,UMTS,CDMA,HRPD ---------------> 15",
+    "UMTS,LTE -------------------------> 18",
+    "TDSCDMA --------------------------> 20",
+    "GSM,UMTS,LTE ---------------------> 22",
+    "GSM,TDSCDMA ----------------------> 24",
+    "GSM,UMTS,CDMA,HRPD,LTE -----------> 25",
+    "UMTS,TDSCDMA ---------------------> 28",
+    "TDSCDMA,LTE ----------------------> 30",
+    "GSM,UMTS,TDSCDMA -----------------> 32",
+    "GSM,TDSCDMA,LTE ------------------> 34",
+    "GSM,TDSCDMA,CDMA,HRPD,UMTS -------> 35",
+    "UMTS,TDSCDMA,LTE -----------------> 38",
+    "GSM,UMTS,TDSCDMA,LTE -------------> 42",
+    "GSM,UMTS,TDSCDMA,CDMA,HRPD,LTE ---> 45"
+  }; 
+  */
+    case 'm':
+      if(strcmp( "mode", longOpts[longIndex].name ) == 0){
+			  if(optarg == NULL){
+				  printf("Error options --mode\n");
+				  exit( EXIT_FAILURE );
+			  }
+			  if(strcmp("all", optarg) == 0){
+				  setting.mode = 0x22;
+			  }else
+			  if(strcmp("lte", optarg) == 0){
+				  setting.mode = 0x10;
+			  }else
+			  if(strcmp("umts", optarg) == 0){
+				  setting.mode = 0x08;
+			  }else
+			  if(strcmp("gsm", optarg) == 0){
+				  setting.mode = 0x04;
+			  }else{
+				  printf("Error argument for options --mode\n");
+			  }
+		  }
+      break;
 	  case 0:
 		  if( strcmp( "auth", longOpts[longIndex].name ) == 0 ) {
 			  if(optarg == NULL){
@@ -425,8 +477,8 @@ int main(int argc, char * argv[])
   }
    
   sleep(2);
-  
-  app_create_data_call(app_tech_umts, DSI_IP_VERSION_4, 0);
+  setModePref(setting.mode);
+  app_create_data_call(app_tech_lte, DSI_IP_VERSION_4, 0);
 #ifdef LOG_ENABLE
   printf("Doing Net UP\n");
 #endif
