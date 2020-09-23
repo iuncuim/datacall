@@ -405,7 +405,7 @@ int main(int argc, char * argv[])
 				  exit( EXIT_FAILURE );
 			  }
 			  if(strcmp("all", optarg) == 0){
-				  setting.mode = 0x22;
+				  setting.mode = 0xff;
 			  }else
 			  if(strcmp("lte", optarg) == 0){
 				  setting.mode = 0x10;
