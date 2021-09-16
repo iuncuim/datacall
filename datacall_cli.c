@@ -77,9 +77,9 @@ int main( int argc, char *argv[] )
 			 printf("{\n");
 			 printf(" \"pin1_status\": ");
 			 if(temp == 1){
-				 printf("verified,\n");
+				 printf("\"verified\",\n");
 			 }else{
-				printf("not_verifed,\n");
+				printf("\"not_verifed\",\n");
 			 }
 			 printf(" \"pin1_verify_tries\": \"error\",\n");
 			 printf(" \"pin1_unblock_tries\": \"error\",\n");

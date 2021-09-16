@@ -72,7 +72,7 @@ void qminasdemo_get_SignalStrength( void )
   memset(&resp, 0, sizeof(nas_get_signal_strength_resp_msg_v01)); 
 
   nas_req_msg.request_mask_valid = 1;
-  nas_req_msg.request_mask = QMI_NAS_REQUEST_SIG_INFO_RSSI_MASK_V01;
+  nas_req_msg.request_mask = 0xFF;
 
   rc = qmi_client_send_msg_sync(qminasdemo_uim_svc_client,
                             QMI_NAS_GET_SIGNAL_STRENGTH_REQ_MSG_V01, 
@@ -113,15 +113,11 @@ void qminasdemo_get_SignalStrength( void )
   }
 
   printf("{\n");
-  printf("        \"type\": \"err\",\n");
-  printf("        \"rssi\": \"err\",\n");
-  printf("        \"ecio\": \"err\",\n");
-  printf("        \"io\": \"err\",\n");
   printf("        \"type\": \"%s\",\n",radio_type); // 0x08 - LTE, 0x05 - UMTS 
   printf("        \"rssi\": \"%d\",\n",resp.signal_strength.sig_strength);
-  printf("        \"rsrq\": \"err\",\n");
-  printf("        \"rsrp\": \"err\",\n");
-  printf("        \"snr\": \"err\",\n");
+  printf("        \"rsrp\": \"%d\"\n",resp.lte_rsrp);
+  printf("        \"rsrq\": \"%d\"\n",resp.rsrq.rsrq); 
+  printf("        \"snr\": \"%d\"\n",resp.snr/10);
   printf("}\n");  
 
   // printf("signal_stregth-sig_strength %d, radio if 0x%x\n", resp.signal_strength.sig_strength, resp.signal_strength.radio_if);
