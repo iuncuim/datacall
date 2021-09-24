@@ -1,6 +1,6 @@
 
 
-CC = ../arm-2014.05/bin/arm-none-linux-gnueabi-gcc
+CC = gcc
 CFLAGS = -c -O2
 
 LD_FLAGS = -ldsi_netctrl \
