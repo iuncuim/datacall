@@ -335,7 +335,7 @@ int main(int argc, char * argv[])
   int opt = 0;
   int longIndex;
   pid_t pid;
-
+  unsigned int sleep_time = 3;
 
   setting.pAPN = NULL;
   setting.pUsername = NULL;
@@ -483,10 +483,16 @@ int main(int argc, char * argv[])
   printf("Doing Net UP\n");
 #endif
   
-  dsi_start_data_call(app_call_info.handle);
-  app_call_info.call_status = app_call_status_connecting;
- 
-  sleep (3);
+  rval = dsi_start_data_call(app_call_info.handle);  
+  sleep(sleep_time);
+  while(app_call_info.call_status == app_call_status_idle || rval != DSI_SUCCESS){
+    rval = dsi_start_data_call(app_call_info.handle);
+    if(sleep_time<=10){
+      sleep(sleep_time++);
+    } else {
+      sleep(10);
+    }
+  }
 
   memset(&addr_info, 0x0, sizeof(dsi_addr_info_t));
   rval = dsi_get_ip_addr(app_call_info.handle, &addr_info, 1);
