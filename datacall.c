@@ -335,7 +335,7 @@ int main(int argc, char * argv[])
   int opt = 0;
   int longIndex;
   pid_t pid;
-  unsigned int sleep_time = 3;
+  unsigned int sleep_time = 2;
 
   setting.pAPN = NULL;
   setting.pUsername = NULL;
@@ -486,11 +486,13 @@ int main(int argc, char * argv[])
   rval = dsi_start_data_call(app_call_info.handle);  
   sleep(sleep_time);
   while(app_call_info.call_status == app_call_status_idle || rval != DSI_SUCCESS){
+    dsi_stop_data_call(app_call_info.handle);
+    sleep(sleep_time);
     rval = dsi_start_data_call(app_call_info.handle);
-    if(sleep_time<=10){
+    if(sleep_time<=5){
       sleep(sleep_time++);
     } else {
-      sleep(10);
+      sleep(5);
     }
   }
 
