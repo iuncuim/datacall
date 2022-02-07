@@ -61,6 +61,46 @@ int qminasdemo_qmi_init(void)
   return 0;
 }
 
+void qminasdemo_get_home_network(void)
+{
+  nas_get_home_network_req_msg_v01 nas_req_msg;
+  nas_get_home_network_resp_msg_v01 resp;
+  qmi_client_error_type rc;
+  char *radio_type = NULL;
+
+  memset(&nas_req_msg, 0, sizeof(nas_get_home_network_req_msg_v01));
+  memset(&resp, 0, sizeof(nas_get_home_network_resp_msg_v01)); 
+
+  rc = qmi_client_send_msg_sync(qminasdemo_uim_svc_client,
+                            QMI_NAS_GET_HOME_NETWORK_REQ_MSG_V01, 
+                            &nas_req_msg, 
+                            sizeof(nas_req_msg), 
+                            &resp, 
+                            sizeof(resp),
+                            10000);
+
+  if (QMI_NO_ERR != rc)
+  {
+    LOG("qmi get home net err=%d\n",
+                  rc);
+  }
+  else if (QMI_NO_ERR != resp.resp.result)
+  {
+    LOG("qmi get home net: failed response err=%d\n",
+                  resp.resp.error);
+
+  }
+  else
+  {
+    //LOG("ok here\n");
+  }
+
+  printf("{\n");
+  printf("        \"MCC\": \"%d\",\n",resp.home_network.mobile_country_code);
+  printf("        \"MNC\": \"%02d\",\n",resp.home_network.mobile_network_code);
+  printf("        \"desc\": \"%s\",\n",resp.home_network.network_description);
+}
+
 void qminasdemo_get_SignalStrength( void )
 {
   nas_get_signal_strength_req_msg_v01 nas_req_msg;
@@ -112,11 +152,10 @@ void qminasdemo_get_SignalStrength( void )
       radio_type="err";
   }
 
-  printf("{\n");
   printf("        \"type\": \"%s\",\n",radio_type); // 0x08 - LTE, 0x05 - UMTS 
   printf("        \"rssi\": \"%d\",\n",resp.signal_strength.sig_strength);
-  printf("        \"rsrp\": \"%d\"\n",resp.lte_rsrp);
-  printf("        \"rsrq\": \"%d\"\n",resp.rsrq.rsrq); 
+  printf("        \"rsrp\": \"%d\",\n",resp.lte_rsrp);
+  printf("        \"rsrq\": \"%d\",\n",resp.rsrq.rsrq); 
   printf("        \"snr\": \"%d\"\n",resp.snr/10);
   printf("}\n");  
 
@@ -171,6 +210,7 @@ int get_RSSI()
 {
   qminasdemo_qmi_init();
 
+  qminasdemo_get_home_network();
   qminasdemo_get_SignalStrength();
  
   qminasdemo_qmi_release();
