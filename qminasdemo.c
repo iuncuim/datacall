@@ -7,6 +7,7 @@
 #include "network_access_service_v01.h"
 
 #define LOG printf
+//#define DEBUG
 
 int setModePref(int mode);
 int get_RSSI();
@@ -81,14 +82,17 @@ void qminasdemo_get_home_network(void)
 
   if (QMI_NO_ERR != rc)
   {
+  #ifdef DEBUG
     LOG("qmi get home net err=%d\n",
                   rc);
+  #endif //DEBUG
   }
   else if (QMI_NO_ERR != resp.resp.result)
   {
+  #ifdef DEBUG 
     LOG("qmi get home net: failed response err=%d\n",
                   resp.resp.error);
-
+  #endif //DEBUG
   }
   else
   {
@@ -96,9 +100,10 @@ void qminasdemo_get_home_network(void)
   }
 
   printf("{\n");
-  printf("        \"MCC\": \"%d\",\n",resp.home_network.mobile_country_code);
+  printf("        \"MCC\": \"%03d\",\n",resp.home_network.mobile_country_code);
   printf("        \"MNC\": \"%02d\",\n",resp.home_network.mobile_network_code);
-  printf("        \"desc\": \"%s\",\n",resp.home_network.network_description);
+  printf("        \"desc\": \"%s\",\n",
+    resp.home_network.network_description[0] != '\0' ? resp.home_network.network_description : "NA");
 }
 
 void qminasdemo_get_SignalStrength( void )

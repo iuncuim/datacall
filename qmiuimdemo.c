@@ -466,7 +466,7 @@ int get_IMSI(int argc , char ** argv)
     printf("\"%s\"\n", imsi);  
     free(imsi);
   } else
-    printf("\"err\"\n"); 
+    printf("\"NA\"\n"); 
    
   qmiuimdemo_qmi_release();
 
@@ -492,7 +492,7 @@ int get_ICCID()
     }
     printf("\"%s\"\n", iccid);
   } else
-    printf("\"err\"\n"); 
+    printf("\"NA\"\n");
   
    if(iccid != NULL)
     free(iccid);
