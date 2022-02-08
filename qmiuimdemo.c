@@ -359,6 +359,8 @@ char * qmiuimdemo_get_imsi(void )
     gw_path = gw_path1;
     else if (getSimType() == 2)
       gw_path = gw_path2;
+      else  
+        return NULL;
   
   memset(&read_params, 0, sizeof(uim_read_transparent_req_msg_v01)); 
   memset(&resp, 0, sizeof(uim_read_transparent_resp_msg_v01)); 
